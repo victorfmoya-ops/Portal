@@ -58,10 +58,6 @@ export default async function Inicio() {
               <dt>Anos de axé</dt>
               <dd>{anos}+</dd>
             </div>
-            <div>
-              <dt>Orixás da casa</dt>
-              <dd>3</dd>
-            </div>
           </dl>
         </div>
         {proximo ? (
