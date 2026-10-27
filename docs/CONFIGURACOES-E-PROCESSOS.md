@@ -316,15 +316,17 @@ docker run --rm -v "${PWD}\infra\terraform\local:/w" -w /w hashicorp/terraform:1
 
 ## 15. Publicação em produção (quando autorizado)
 
-1. Criar o Supabase na nuvem (painel ou `infra/terraform/producao`).
-2. `npx supabase link --project-ref <ref>` → `npx supabase db push` (aplica as migrations; **sem** o seed).
-3. Configurar Auth (Site URL, Redirect URLs, Google — `GUIA-LOGIN-GOOGLE.md`), SMTP próprio para os e-mails.
-4. Hospedar o portal: imagem Docker (`Dockerfile`) num servidor com HTTPS (nginx/Caddy) ou Vercel, com as
-   variáveis da seção 5 (valores de produção).
-5. Agendar as rotinas (`infra/agendador/rotinas.sh` ou cron do provedor) e o monitoramento.
-6. Cadastrar o primeiro administrador direto no banco (SQL Editor):
-   `insert into membros (org_id, email, nome, papel) values ('<org>', '<email>', '<nome>', 'admin');`
-7. Revisão de segurança/LGPD antes de dados reais; backup automático do banco ligado.
+Passo a passo completo (hospedagem com Node.js, envio por FTP): **`PUBLICAR-NA-HOSPEDAGEM.md`**. Resumo:
+
+1. Supabase na nuvem (painel ou `infra/terraform/producao`) → `npx supabase link` → `npx supabase db push` →
+   rodar `supabase/seed.sql` no SQL Editor (são só os dados **reais** da casa; o `infra/ci/dados-de-teste.sql` nunca).
+2. Auth: Site URL e Redirect URLs com o domínio, confirmação de e-mail ligada, SMTP próprio, Google (opcional).
+3. `.env.producao` (ignorado pelo git) → `scripts\gerar-pacote-ftp.ps1` → `dist\ftp\portal.zip`
+   (o script recusa valores inseguros e confere que nenhum segredo/binário de Windows entrou no pacote).
+4. Painel: aplicação Node.js 22, arquivo de início `server.js`, variáveis de ambiente, enviar e extrair o zip, Restart.
+5. Cron Jobs do painel chamando `/api/cron/*` com o `CRON_SECRET`; primeiro admin pelo SQL Editor.
+6. Teste de fumaça contra o domínio (`BASE=https://… node infra/ci/smoke.mjs`); revisão de segurança/LGPD antes
+   de dados reais; backup automático do banco ligado.
 
 ## 16. Rotina do administrador
 

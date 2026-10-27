@@ -31,6 +31,9 @@ const nextConfig: NextConfig = {
   // standalone = imagem Docker enxuta (o Dockerfile define NEXT_OUTPUT=standalone)
   output: process.env.NEXT_OUTPUT === 'standalone' ? 'standalone' : undefined,
   poweredByHeader: false,
+  // o portal usa <img> comum: sem o otimizador de imagens (/_next/image) não precisa do "sharp",
+  // que é binário nativo e quebraria ao levar o pacote do Windows para uma hospedagem Linux
+  images: { unoptimized: true },
   reactStrictMode: true,
   experimental: {
     // comprovantes de até 10 MB passam pela Server Action

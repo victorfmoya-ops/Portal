@@ -38,7 +38,7 @@ Site público + área restrita (PWA) da casa de santo. Visual fiel ao protótipo
 | Área do filho (início, escala, calendário, mensalidade, festas, grupo, meus dados) | ✅ pronto |
 | Administração (rodízio, financeiro, festas, calendário de funções/toques, filhos, grupos, galeria, site, áreas restritas, auditoria) | ✅ pronto |
 | Banco: 6 migrations, RLS em todas as tabelas, funções de negócio, Storage | ✅ pronto |
-| Testes: 24 unitários, 37 pgTAP (RLS), fumaça (7) | ✅ passando · **E2E Playwright ajustado mas não executado nesta versão** |
+| Testes: 24 unitários, 37 pgTAP (RLS), fumaça (7) | ✅ passando · E2E Playwright 4/4 |
 | Docker (portal + agendador + Prometheus + Blackbox + Grafana) | ✅ rodando em 127.0.0.1 |
 | Esteira GitLab (Gitleaks, Semgrep, Trivy, npm audit, testes, SonarQube, build, Trivy imagem, review, ZAP) | ✅ pipeline #6 aprovado (versão 1) · **versão 2 ainda não passou pela esteira** |
 | Automação de privacidade (apagar comprovante analisado) testada de ponta a ponta | ✅ |
@@ -46,10 +46,21 @@ Site público + área restrita (PWA) da casa de santo. Visual fiel ao protótipo
 | Documentos: apresentação v2 (MD + PDF), configurações e processos, registro de erros, guia do Google | ✅ |
 | Guia de bolso DevSecOps/Terraform e documento da esteira (PDF) | ⏳ **pendente** — estilo pronto em `docs/apresentacao/estilo.css` |
 
+## Sessão 27/10/2026 (noite) — pronto para publicar
+- Seção "Nossos Orixás" e o número "3 orixás" removidos do site (a casa tem todos os orixás).
+- Login com **caixinha "Não sou um robô"** (reCAPTCHA v2), conferida no servidor; **desligada** até as chaves reais
+  (google.com/recaptcha/admin → `RECAPTCHA_SITE_KEY` e `RECAPTCHA_SECRET_KEY`). A chave Enterprise enviada não serve.
+- Verificação completa: `docs/seguranca/RELATORIO-DE-VERIFICACAO.md` (0 alto/crítico; correções feitas: cookie
+  HttpOnly, login Google no Docker, `.env.producao` no .gitignore, sharp fora do pacote, CSP do captcha).
+- **Pacote FTP** para hospedagem com Node.js: `scripts/gerar-pacote-ftp.ps1` + `docs/PUBLICAR-NA-HOSPEDAGEM.md`
+  (testado rodando `node server.js` como na hospedagem).
+
 ## Próximos passos
 0. **Retomar a sessão da versão 2:** (a) gerar o guia de bolso DevSecOps + Terraform e o documento da esteira
    (MD + PDF, mesmo estilo da apresentação); (b) rodar o E2E com dados de teste num banco descartável;
-   (c) passar a versão 2 pela esteira (`scripts/integrar-na-esteira.ps1`); (d) trocar o e-mail provisório do Victor.
+   (c) passar a versão 2 pela esteira (`scripts/integrar-na-esteira.ps1`); (d) trocar o e-mail provisório do Victor;
+   (e) publicar: criar o Supabase na nuvem, `.env.producao`, gerar o pacote e subir (`PUBLICAR-NA-HOSPEDAGEM.md`);
+   (f) chaves reais do captcha. O E2E (b) já foi executado: 4/4.
 1. Casa revisar telas e textos (história completa, fotos e vídeos das festas).
 2. Definir domínio e hospedagem → seguir "Publicação em produção" em `CONFIGURACOES-E-PROCESSOS.md`.
 3. Configurar o Google (guia) e o SMTP próprio para os e-mails.
