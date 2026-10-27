@@ -70,3 +70,23 @@ variable "porta_grafana" {
   type    = number
   default = 3006
 }
+
+# reCAPTCHA Enterprise no login: desligado enquanto as três estiverem vazias
+variable "recaptcha_site_key" {
+  description = "Chave do site do reCAPTCHA Enterprise (pública)"
+  type        = string
+  default     = ""
+}
+
+variable "recaptcha_project_id" {
+  description = "ID do projeto do Google Cloud do reCAPTCHA"
+  type        = string
+  default     = ""
+}
+
+variable "recaptcha_api_key" {
+  description = "Chave de API restrita à reCAPTCHA Enterprise API (segredo)"
+  type        = string
+  default     = ""
+  sensitive   = true
+}

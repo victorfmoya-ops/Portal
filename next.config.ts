@@ -10,13 +10,16 @@ const supabase = (() => {
 const dev = process.env.NODE_ENV !== 'production';
 
 // Política de segurança de conteúdo: só carrega o que é do próprio portal (e fotos do Supabase).
+// Exceção: o reCAPTCHA do login (script e quadro do Google, só nos caminhos /recaptcha/).
+const recaptcha = 'https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/';
 const csp = [
   "default-src 'self'",
-  `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ''}`,
+  `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ''} ${recaptcha}`,
+  'frame-src https://www.google.com/recaptcha/ https://recaptcha.google.com/recaptcha/',
   "style-src 'self' 'unsafe-inline'",
   `img-src 'self' data: blob: ${supabase}`,
   "font-src 'self'",
-  `connect-src 'self' ${supabase}`,
+  `connect-src 'self' ${supabase} https://www.google.com/recaptcha/`,
   "frame-ancestors 'none'",
   "base-uri 'self'",
   "object-src 'none'",

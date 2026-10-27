@@ -86,6 +86,9 @@ resource "docker_container" "web" {
     "SUPABASE_SERVICE_ROLE_KEY=${var.supabase_service_role_key}",
     "CRON_SECRET=${var.cron_secret}",
     "METRICS_TOKEN=${var.metrics_token}",
+    "RECAPTCHA_SITE_KEY=${var.recaptcha_site_key}",
+    "RECAPTCHA_PROJECT_ID=${var.recaptcha_project_id}",
+    "RECAPTCHA_API_KEY=${var.recaptcha_api_key}",
   ]
 
   host {

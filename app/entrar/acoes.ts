@@ -2,6 +2,7 @@
 import { redirect } from 'next/navigation';
 import { envPublico } from '@/lib/env';
 import { voltar } from '@/lib/mensagens';
+import { verificarRecaptcha } from '@/lib/recaptcha';
 import { criarClienteServidor } from '@/lib/supabase/servidor';
 import { emailSchema, loginSchema, novaSenhaSchema, primeiroAcessoSchema, validar } from '@/lib/validacao';
 
@@ -10,6 +11,11 @@ const site = () => envPublico.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '');
 export async function entrarComSenha(fd: FormData) {
   const v = validar(loginSchema, fd);
   if (!v.ok) voltar('/entrar', { erro: v.erro });
+  const captcha = await verificarRecaptcha(fd.get('recaptcha'), 'LOGIN');
+  if (!captcha.ok) {
+    console.warn('[login] reCAPTCHA recusou:', captcha.motivo);
+    voltar('/entrar', { erro: 'Não conseguimos confirmar que é você (verificação de segurança). Tente de novo.' });
+  }
   const supabase = await criarClienteServidor();
   const { error } = await supabase.auth.signInWithPassword({ email: v.dados.email, password: v.dados.senha });
   if (error) {

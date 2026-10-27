@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { AppShell } from '@/components/AppShell';
 import { BotaoEnviar } from '@/components/BotaoEnviar';
+import { FormComCaptcha } from '@/components/FormComCaptcha';
+import { chaveRecaptcha } from '@/lib/recaptcha';
 import { obterSessao } from '@/lib/sessao';
 import { entrarComGoogle, entrarComSenha } from './acoes';
 
@@ -26,7 +28,7 @@ export default async function Entrar() {
           </BotaoEnviar>
         </form>
         <div className="divisor">ou com e-mail e senha</div>
-        <form action={entrarComSenha}>
+        <FormComCaptcha acao={entrarComSenha} chave={chaveRecaptcha()} acaoRecaptcha="LOGIN">
           <label className="f">
             <span>E-mail</span>
             <input name="email" type="email" autoComplete="email" required maxLength={254} />
@@ -36,7 +38,7 @@ export default async function Entrar() {
             <input name="senha" type="password" autoComplete="current-password" required maxLength={72} />
           </label>
           <BotaoEnviar>Entrar</BotaoEnviar>
-        </form>
+        </FormComCaptcha>
         <div className="actions" style={{ justifyContent: 'space-between' }}>
           <Link href="/primeiro-acesso">Primeiro acesso (criar senha)</Link>
           <Link href="/esqueci-senha">Esqueci a senha</Link>
