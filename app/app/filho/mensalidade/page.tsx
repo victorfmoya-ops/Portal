@@ -7,7 +7,10 @@ import { enviarComprovante } from '../acoes';
 
 export const dynamic = 'force-dynamic';
 
-const nomeCompetencia = (c: string) => `${MESES[Number(c.slice(5, 7)) - 1]} de ${c.slice(0, 4)}`;
+const nomeCompetencia = (c: string) => {
+  const m = MESES[Number(c.slice(5, 7)) - 1];
+  return `${m[0].toUpperCase()}${m.slice(1)} de ${c.slice(0, 4)}`;
+};
 
 export default async function Mensalidade() {
   const { supabase, membro } = await exigirFilho();
@@ -27,7 +30,7 @@ export default async function Mensalidade() {
               💰 {i === 0 ? 'Minha mensalidade' : 'Mensalidade'} — {brl(m.valor)}/mês
             </h3>
             <div className="item">
-              <div className="t" style={{ textTransform: 'capitalize' }}>
+              <div className="t">
                 {nomeCompetencia(m.competencia)}
               </div>
               <div className="s">

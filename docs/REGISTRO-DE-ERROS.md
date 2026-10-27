@@ -113,6 +113,23 @@ quando o mesmo problema voltar.
 - **Solução:** linha entre aspas simples. **Prevenção:** validar sempre com a API de lint do GitLab antes do push
   (`POST /projects/:id/ci/lint`), como passou a ser feito.
 
+### E19 · Job `testes-banco` falhou ao baixar o código (`HTTP 403`, "expected flush after ref listing")
+- **Sintoma:** o job parou em *Getting source from Git repository*, antes de rodar qualquer comando; os outros jobs
+  da mesma etapa baixaram o código normalmente.
+- **Causa:** falha passageira do runner local ao usar o token do job no `git fetch` (dois jobs iniciando juntos no
+  mesmo runner). Não é erro do código nem do `.gitlab-ci.yml`.
+- **Solução:** *Retry* do job (botão ↻ no GitLab ou `POST /jobs/:id/retry`). Se repetir com frequência: aumentar
+  `concurrent` do runner com cuidado de memória ou reiniciar o container `gitlab-runner`.
+
+### E20 · Trivy bloqueou a imagem: 11 vulnerabilidades ALTAS (gate funcionou)
+- **Sintoma:** job `trivy-imagem` falhou: `Total: 22 (LOW: 1, MEDIUM: 10, HIGH: 11, CRITICAL: 0)`; review e ZAP foram
+  pulados (a esteira não deixa uma imagem vulnerável seguir).
+- **Causa:** as falhas estavam no **npm/corepack/yarn que vêm de fábrica na imagem `node:22-alpine`**
+  (`brace-expansion`, `pacote`, `http-cache-semantics`, `ip-address`, `picomatch`, `@sigstore/core`…), não no portal.
+  O portal em produção só executa `node server.js` e não precisa dessas ferramentas.
+- **Solução:** a etapa final do `Dockerfile` remove `npm`, `npx`, `corepack` e `yarn`. Reescaneado localmente:
+  **0 vulnerabilidades altas/críticas**. Benefício extra: imagem menor e com menos superfície de ataque.
+
 ### E16 · Segredo local exibido num relatório
 - **Sintoma:** o relatório do Trivy (varredura de segredos) mostrou parte do `.env` local, incluindo o `CRON_SECRET`
   de desenvolvimento.

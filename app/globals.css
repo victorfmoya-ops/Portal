@@ -165,7 +165,8 @@ body:has(.app) { background: #eef2fb }
 .dot.limpeza { background: var(--green) }
 .cal-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px }
 .cal-nav a { text-decoration: none; font-weight: 800; font-size: 18px; padding: 4px 10px; border-radius: 9px; background: var(--soft); color: var(--brand-d) }
-.cal-nav strong { text-transform: capitalize; font-size: 15px }
+.cal-nav strong { font-size: 15px }
+.cal-nav strong::first-letter { text-transform: uppercase }
 .legenda { display: flex; gap: 12px; flex-wrap: wrap; font-size: 11.5px; color: var(--muted); margin-top: 8px }
 .legenda span { display: inline-flex; align-items: center; gap: 4px }
 .pub .cal td { height: 64px; font-size: 13px }

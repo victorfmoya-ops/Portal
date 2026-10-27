@@ -25,7 +25,12 @@ RUN npm run build
 FROM node:22-alpine AS runtime
 WORKDIR /app
 ENV NODE_ENV=production NEXT_TELEMETRY_DISABLED=1 PORT=3000 HOSTNAME=0.0.0.0 TZ=America/Sao_Paulo
-RUN apk add --no-cache tzdata wget && addgroup -S portal -g 1001 && adduser -S portal -u 1001 -G portal
+# Remove npm/corepack/yarn: a imagem final só roda "node server.js" e essas ferramentas trazem
+# dependências com vulnerabilidades conhecidas (achado do Trivy na esteira — ver REGISTRO-DE-ERROS E20).
+RUN apk add --no-cache tzdata wget \
+ && rm -rf /usr/local/lib/node_modules/npm /usr/local/lib/node_modules/corepack /opt/yarn-* \
+           /usr/local/bin/npm /usr/local/bin/npx /usr/local/bin/corepack /usr/local/bin/yarn /usr/local/bin/yarnpkg \
+ && addgroup -S portal -g 1001 && adduser -S portal -u 1001 -G portal
 COPY --from=build --chown=portal:portal /app/.next/standalone ./
 COPY --from=build --chown=portal:portal /app/.next/static ./.next/static
 COPY --from=build --chown=portal:portal /app/public ./public
