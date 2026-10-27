@@ -183,13 +183,19 @@ owasp-zap:
   extends: .node_docker
   stage: dast
   script:
-    - docker run --name zap-${CI_JOB_ID} --network ${LAB_NETWORK} -u zap zaproxy/zap-stable:2.17.0
+    # o ZAP só grava relatórios numa pasta MONTADA em /zap/wrk (volume descartável, dono = usuário zap)
+    - docker volume create zap-${CI_JOB_ID}
+    - docker run --rm -v zap-${CI_JOB_ID}:/zap/wrk alpine:3.22 chown 1000:1000 /zap/wrk
+    - docker run --name zap-${CI_JOB_ID} --network ${LAB_NETWORK} -v zap-${CI_JOB_ID}:/zap/wrk -u zap zaproxy/zap-stable:2.17.0
         zap-baseline.py -t http://${REVIEW_NAME}:3000 -r zap-report.html -J zap-report.json -I || true
     - docker cp zap-${CI_JOB_ID}:/zap/wrk/zap-report.html . && docker cp zap-${CI_JOB_ID}:/zap/wrk/zap-report.json .
-    - docker rm -f zap-${CI_JOB_ID}
     # ZAP: Alto(3), Médio(2), Baixo(1), Informativo(0). Mostra tudo; bloqueia só em Alto.
     - apk add --no-cache nodejs >/dev/null 2>&1 || true
     - node -e "const r=require('./zap-report.json');const a=r.site.flatMap(s=>s.alerts);const n=k=>a.filter(x=>x.riskcode===k).length;console.log('ZAP => Alto:',n('3'),'Medio:',n('2'),'Baixo:',n('1'),'Info:',n('0'));a.forEach(x=>console.log(' -',x.riskdesc,'|',x.name));process.exit(n('3')?1:0)"
+  after_script:
+    - apk add --no-cache docker-cli >/dev/null 2>&1 || true
+    - docker rm -f zap-${CI_JOB_ID} || true
+    - docker volume rm zap-${CI_JOB_ID} || true
   artifacts:
     when: always
     paths: [zap-report.html, zap-report.json]

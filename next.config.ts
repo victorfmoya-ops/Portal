@@ -46,6 +46,8 @@ const nextConfig: NextConfig = {
           { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), payment=()' },
           { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
+          // achado baixo do OWASP ZAP: recursos do portal só podem ser carregados pelo próprio site
+          { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' },
         ],
       },
       {

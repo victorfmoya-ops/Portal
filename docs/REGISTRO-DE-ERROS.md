@@ -130,6 +130,26 @@ quando o mesmo problema voltar.
 - **Solução:** a etapa final do `Dockerfile` remove `npm`, `npx`, `corepack` e `yarn`. Reescaneado localmente:
   **0 vulnerabilidades altas/críticas**. Benefício extra: imagem menor e com menos superfície de ataque.
 
+### E21 · OWASP ZAP não gerou relatório ("the directory '/zap/wrk' is not mounted")
+- **Sintoma:** job `owasp-zap` falhou com `Cannot find module './zap-report.json'`.
+- **Causa:** o ZAP só grava relatórios numa pasta **montada** em `/zap/wrk`; o job não montava nada, e o `|| true`
+  escondia o erro do ZAP.
+- **Solução:** volume Docker descartável por job (`zap-<job>`), com dono ajustado para o usuário `zap` (uid 1000),
+  removido no `after_script`. Testado localmente antes do push.
+- **Detalhe do teste local:** no Git Bash o caminho `/zap/wrk` virou `C:/Program Files/Git/zap/wrk` (conversão
+  automática do MSYS). Para comandos Docker com caminhos Linux no Git Bash use `MSYS_NO_PATHCONV=1`.
+
+### Resultado do OWASP ZAP (baseline) — 0 alto, 3 médios, 2 baixos, 4 informativos
+| Risco | Alerta | Decisão |
+|---|---|---|
+| Médio | CSP `script-src`/`style-src 'unsafe-inline'` | **Risco aceito por ora:** o Next.js precisa de scripts inline sem *nonce*. A saída é escapada pelo React (sem `innerHTML`). Melhoria planejada: CSP com *nonce* via `proxy.ts`. |
+| Médio | Ausência de token anti-CSRF nos formulários | **Falso positivo:** os formulários usam Server Actions, que o Next.js protege conferindo a origem (`Origin` = `Host`); o cookie de sessão é `SameSite=Lax`. |
+| Baixo | `Cross-Origin-Resource-Policy` ausente | **Corrigido:** cabeçalho `same-origin` adicionado. |
+| Baixo | `Cross-Origin-Embedder-Policy` ausente | **Aceito:** ativar `require-corp` bloquearia as fotos da galeria servidas pelo Supabase (outra origem). |
+| Info | Conteúdo armazenável/não armazenável, "Modern Web Application" | Informativo; páginas da área restrita já usam `Cache-Control: no-store`. |
+
+Relatórios completos: `docs/seguranca/zap-report.html` e `.json`.
+
 ### E16 · Segredo local exibido num relatório
 - **Sintoma:** o relatório do Trivy (varredura de segredos) mostrou parte do `.env` local, incluindo o `CRON_SECRET`
   de desenvolvimento.
