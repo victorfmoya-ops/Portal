@@ -28,7 +28,7 @@ export default async function Entrar() {
           </BotaoEnviar>
         </form>
         <div className="divisor">ou com e-mail e senha</div>
-        <FormComCaptcha acao={entrarComSenha} chave={chaveRecaptcha()} acaoRecaptcha="LOGIN">
+        <FormComCaptcha acao={entrarComSenha} chave={chaveRecaptcha()} botao={<BotaoEnviar>Entrar</BotaoEnviar>}>
           <label className="f">
             <span>E-mail</span>
             <input name="email" type="email" autoComplete="email" required maxLength={254} />
@@ -37,7 +37,6 @@ export default async function Entrar() {
             <span>Senha</span>
             <input name="senha" type="password" autoComplete="current-password" required maxLength={72} />
           </label>
-          <BotaoEnviar>Entrar</BotaoEnviar>
         </FormComCaptcha>
         <div className="actions" style={{ justifyContent: 'space-between' }}>
           <Link href="/primeiro-acesso">Primeiro acesso (criar senha)</Link>

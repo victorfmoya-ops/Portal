@@ -87,8 +87,7 @@ resource "docker_container" "web" {
     "CRON_SECRET=${var.cron_secret}",
     "METRICS_TOKEN=${var.metrics_token}",
     "RECAPTCHA_SITE_KEY=${var.recaptcha_site_key}",
-    "RECAPTCHA_PROJECT_ID=${var.recaptcha_project_id}",
-    "RECAPTCHA_API_KEY=${var.recaptcha_api_key}",
+    "RECAPTCHA_SECRET_KEY=${var.recaptcha_secret_key}",
   ]
 
   host {

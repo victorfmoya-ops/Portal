@@ -10,7 +10,7 @@ const supabase = (() => {
 const dev = process.env.NODE_ENV !== 'production';
 
 // Política de segurança de conteúdo: só carrega o que é do próprio portal (e fotos do Supabase).
-// Exceção: o reCAPTCHA do login (script e quadro do Google, só nos caminhos /recaptcha/).
+// Exceção: o reCAPTCHA do login (script, quadro e conexão do Google, só nos caminhos /recaptcha/).
 const recaptcha = 'https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/';
 const csp = [
   "default-src 'self'",

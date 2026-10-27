@@ -1,6 +1,6 @@
 'use server';
 import { redirect } from 'next/navigation';
-import { envPublico } from '@/lib/env';
+import { envPublico, paraUrlPublica } from '@/lib/env';
 import { voltar } from '@/lib/mensagens';
 import { verificarRecaptcha } from '@/lib/recaptcha';
 import { criarClienteServidor } from '@/lib/supabase/servidor';
@@ -11,7 +11,7 @@ const site = () => envPublico.NEXT_PUBLIC_SITE_URL.replace(/\/$/, '');
 export async function entrarComSenha(fd: FormData) {
   const v = validar(loginSchema, fd);
   if (!v.ok) voltar('/entrar', { erro: v.erro });
-  const captcha = await verificarRecaptcha(fd.get('recaptcha'), 'LOGIN');
+  const captcha = await verificarRecaptcha(fd.get('g-recaptcha-response'));
   if (!captcha.ok) {
     console.warn('[login] reCAPTCHA recusou:', captcha.motivo);
     voltar('/entrar', { erro: 'Não conseguimos confirmar que é você (verificação de segurança). Tente de novo.' });
@@ -32,7 +32,7 @@ export async function entrarComGoogle() {
     options: { redirectTo: `${site()}/auth/callback`, scopes: 'openid email profile' },
   });
   if (error || !data.url) voltar('/entrar', { erro: 'Login com Google ainda não está configurado. Use e-mail e senha.' });
-  redirect(data.url);
+  redirect(paraUrlPublica(data.url));
 }
 
 /** Cria a senha de quem a casa já cadastrou. Sempre responde igual (não revela quem está cadastrado). */

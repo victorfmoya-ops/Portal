@@ -91,24 +91,26 @@ Nunca vão para o Git (`.gitignore`). Modelo comentado em `.env.example`.
 | `METRICS_TOKEN` | **segredo** | Protege `/api/metrics` |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | segredo | Login com Google (ver `GUIA-LOGIN-GOOGLE.md`) |
 | `GRAFANA_ADMIN_PASSWORD` | **segredo** | Senha do Grafana |
-| `RECAPTCHA_SITE_KEY` | sim | Chave do site do reCAPTCHA Enterprise (login) |
-| `RECAPTCHA_PROJECT_ID` | — | Projeto do Google Cloud da chave |
-| `RECAPTCHA_API_KEY` | **segredo** | Chave de API restrita à *reCAPTCHA Enterprise API* (o servidor confere o token) |
-| `RECAPTCHA_NOTA_MINIMA` | — | Nota mínima aceita, de 0 (robô) a 1 (humano); padrão `0.5` |
+| `RECAPTCHA_SITE_KEY` | sim | Chave do site do reCAPTCHA v2 “Não sou um robô” (login) |
+| `RECAPTCHA_SECRET_KEY` | **segredo** | Chave secreta do reCAPTCHA v2 (o servidor confere a caixinha) |
 
-### reCAPTCHA no login (e-mail e senha)
-- **Liga sozinho** quando `RECAPTCHA_SITE_KEY`, `RECAPTCHA_PROJECT_ID` e `RECAPTCHA_API_KEY` estão preenchidas;
-  com alguma vazia, o login funciona sem captcha (ambiente local e esteira).
-- Fluxo: o navegador pede o token ao Google (invisível, ação `LOGIN`) → a Server Action confere o token na API
-  `assessments` do reCAPTCHA Enterprise (válido, mesma ação, nota ≥ mínima) → só então tenta a senha.
+### reCAPTCHA no login (e-mail e senha) — caixinha “Não sou um robô”
+- **Liga sozinho** quando `RECAPTCHA_SITE_KEY` e `RECAPTCHA_SECRET_KEY` estão preenchidas; com alguma vazia,
+  o login funciona sem captcha (ambiente local e esteira).
+- Fluxo: a pessoa marca a caixinha → o formulário só envia com ela marcada → a Server Action confere a resposta
+  no Google (`siteverify`, com a chave secreta) e o domínio onde foi resolvida → só então tenta a senha.
   Se o Google não responder, o login é **recusado** (mais seguro) e o motivo vai para o log do servidor.
-- Ligar: Google Cloud → ative a *reCAPTCHA Enterprise API* → na chave do site, inclua os domínios
-  (`127.0.0.1`/`localhost` para testes e o domínio de produção) → crie uma **chave de API** restrita a essa API →
-  preencha as variáveis em `.env`/`.env.local` → `docker compose up -d web`.
+- Criar as chaves: https://www.google.com/recaptcha/admin → **+** → tipo **Desafio (v2) → Caixa de seleção
+  “Não sou um robô”** → domínios: o domínio do site (e `127.0.0.1`/`localhost` para testar) → copie a chave do
+  site e a chave secreta para `.env`/`.env.local` (ou para as variáveis do painel da hospedagem) → reinicie o portal
+  (`docker compose up -d web`).
+- Para testar sem chave própria, o Google publica **chaves de teste** (aprovam sempre e mostram um aviso
+  vermelho): https://developers.google.com/recaptcha/docs/faq — nunca use em produção.
+- Chaves do tipo **reCAPTCHA Enterprise / v3 (invisível)** não servem para a caixinha.
 - A CSP libera só `https://www.google.com/recaptcha/` e `https://www.gstatic.com/recaptcha/` (script, quadro e conexão).
 - **Limite:** o captcha protege o formulário do portal. O endpoint de login do Supabase é público (a chave anon vai
   para o navegador) e continua protegido pelo **limite de tentativas do Supabase Auth**. Para captcha também nesse
-  endpoint, o Supabase só aceita **hCaptcha** ou **Cloudflare Turnstile** (configuração em Auth → Bot protection).
+  endpoint, o Supabase só aceita **hCaptcha** ou **Cloudflare Turnstile** (Auth → Bot protection).
 
 ### Trocar segredos
 1. Apague a linha do segredo em `.env.local` **e** em `.env`.
@@ -302,7 +304,7 @@ docker run --rm -v "${PWD}\infra\terraform\local:/w" -w /w hashicorp/terraform:1
 
 - RLS em todas as tabelas; filho sem nenhuma policy de escrita; funções com `search_path` fixo e checagem de permissão.
 - Vínculo de conta só com e-mail **confirmado** (impede tomar o cadastro de outra pessoa).
-- reCAPTCHA Enterprise no login por e-mail e senha, conferido no servidor (ver seção 5).
+- reCAPTCHA v2 (“Não sou um robô”) no login por e-mail e senha, conferido no servidor (ver seção 5).
 - Senhas: mínimo 8, letras e números; troca de senha exige login recente.
 - Cabeçalhos: CSP, HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy, COOP e CORP; sem `X-Powered-By`.
 - Imagem Docker sem npm/yarn/corepack (Trivy: 0 vulnerabilidades altas/críticas).

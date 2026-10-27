@@ -24,5 +24,27 @@ export function urlSupabaseServidor(): string {
   return process.env.SUPABASE_INTERNAL_URL || envPublico.NEXT_PUBLIC_SUPABASE_URL;
 }
 
+/**
+ * Links do Supabase que vão para o NAVEGADOR (login com Google, arquivo assinado) saem com a URL
+ * que o servidor usou; dentro do Docker ela é interna (host.docker.internal) — troca pela pública.
+ */
+export function paraUrlPublica(url: string): string {
+  const interna = urlSupabaseServidor();
+  return interna !== envPublico.NEXT_PUBLIC_SUPABASE_URL && url.startsWith(interna)
+    ? envPublico.NEXT_PUBLIC_SUPABASE_URL + url.slice(interna.length)
+    : url;
+}
+
 /** Nome fixo do cookie de sessão: igual no navegador e no servidor, mesmo com URLs diferentes. */
 export const COOKIE_SESSAO = 'sb-portal-ase-auth';
+
+/**
+ * Cookie de sessão: o navegador nunca usa o Supabase direto (tudo passa pelo servidor),
+ * então o cookie pode ser HttpOnly (scripts da página não leem a sessão) e, em HTTPS, Secure.
+ */
+export const OPCOES_COOKIE_SESSAO = {
+  name: COOKIE_SESSAO,
+  httpOnly: true,
+  sameSite: 'lax' as const,
+  secure: envPublico.NEXT_PUBLIC_SITE_URL.startsWith('https://'),
+};

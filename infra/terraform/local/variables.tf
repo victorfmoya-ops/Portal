@@ -71,21 +71,15 @@ variable "porta_grafana" {
   default = 3006
 }
 
-# reCAPTCHA Enterprise no login: desligado enquanto as três estiverem vazias
+# reCAPTCHA v2 ("Não sou um robô") no login: desligado enquanto as duas estiverem vazias
 variable "recaptcha_site_key" {
-  description = "Chave do site do reCAPTCHA Enterprise (pública)"
+  description = "Chave do site do reCAPTCHA v2 (pública)"
   type        = string
   default     = ""
 }
 
-variable "recaptcha_project_id" {
-  description = "ID do projeto do Google Cloud do reCAPTCHA"
-  type        = string
-  default     = ""
-}
-
-variable "recaptcha_api_key" {
-  description = "Chave de API restrita à reCAPTCHA Enterprise API (segredo)"
+variable "recaptcha_secret_key" {
+  description = "Chave secreta do reCAPTCHA v2"
   type        = string
   default     = ""
   sensitive   = true

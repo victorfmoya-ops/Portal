@@ -236,6 +236,7 @@ body:has(.app) { background: var(--bg) }
 .app input::file-selector-button { background: var(--card-2); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; margin-right: 10px; font-family: inherit }
 .app .f > span:first-child { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 600 }
 .app div.f { margin-bottom: 12px }
+.app .captcha { margin: 4px 0 12px; min-height: 78px }
 .app .arquivo { position: relative; display: flex; align-items: center; gap: 10px; padding: 8px; border: 1px dashed rgba(255,255,255,.18); border-radius: 12px; background: rgba(0,0,0,.28) }
 .app .arquivo input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; padding: 0; cursor: pointer }
 .app .arquivo input:focus-visible + .arquivo-botao { outline: 2px solid var(--gold); outline-offset: 2px }

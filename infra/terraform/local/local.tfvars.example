@@ -7,5 +7,4 @@ metrics_token             = "__copie do .env (METRICS_TOKEN)__"
 grafana_senha             = "__copie do .env (GRAFANA_ADMIN_PASSWORD)__"
 # opcionais (reCAPTCHA no login)
 recaptcha_site_key        = ""
-recaptcha_project_id      = ""
-recaptcha_api_key         = ""
+recaptcha_secret_key      = ""
