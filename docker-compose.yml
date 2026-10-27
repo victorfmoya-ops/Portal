@@ -1,0 +1,118 @@
+# =====================================================================
+# Portal Família Àṣẹ Omos Odé — ambiente Docker de desenvolvimento
+#   O banco (Supabase) roda pelo "npx supabase start" (porta 55421).
+#   Aqui sobem: portal (web), agendador (automações) e monitoramento.
+# Uso: powershell -File scripts\configurar-ambiente.ps1 ; docker compose up -d --build
+# Portas só em 127.0.0.1 (nada exposto para a rede/internet).
+# =====================================================================
+name: portal-ase
+
+x-seguro: &seguro
+  restart: unless-stopped
+  security_opt: ["no-new-privileges:true"]
+  cap_drop: ["ALL"]
+  logging:
+    driver: json-file
+    options: { max-size: "10m", max-file: "3" }
+
+services:
+  web:
+    <<: *seguro
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+        NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+        NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://127.0.0.1:3020}
+        NEXT_PUBLIC_ORG_SLUG: ${NEXT_PUBLIC_ORG_SLUG:-omos-ode}
+    image: portal-ase-web:local
+    read_only: true
+    tmpfs: ["/tmp", "/app/.next/cache:uid=1001,gid=1001"]
+    environment:
+      NEXT_PUBLIC_SUPABASE_URL: ${NEXT_PUBLIC_SUPABASE_URL}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${NEXT_PUBLIC_SUPABASE_ANON_KEY}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL:-http://127.0.0.1:3020}
+      NEXT_PUBLIC_ORG_SLUG: ${NEXT_PUBLIC_ORG_SLUG:-omos-ode}
+      # dentro do container o Supabase do host é alcançado por host.docker.internal
+      SUPABASE_INTERNAL_URL: ${SUPABASE_INTERNAL_URL:-http://host.docker.internal:55421}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      CRON_SECRET: ${CRON_SECRET}
+      METRICS_TOKEN: ${METRICS_TOKEN}
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["127.0.0.1:${WEB_HOST_PORT:-3020}:3000"]
+    mem_limit: 512m
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # Automação: chama as rotinas do portal no horário (sem expor nada)
+  agendador:
+    <<: *seguro
+    image: alpine:3.22
+    read_only: true
+    tmpfs: ["/tmp"]
+    environment:
+      CRON_SECRET: ${CRON_SECRET}
+    volumes:
+      - ./infra/agendador/rotinas.sh:/rotinas.sh:ro
+    entrypoint: ["/bin/sh", "/rotinas.sh"]
+    depends_on:
+      web: { condition: service_healthy }
+    mem_limit: 32m
+
+  prometheus:
+    <<: *seguro
+    image: prom/prometheus:v3.15.1
+    user: "65534:65534"
+    tmpfs: ["/tmp:uid=65534,gid=65534"]
+    # grava o token num arquivo temporário (o Prometheus não lê variáveis no YAML)
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        printf '%s' "$$METRICS_TOKEN" > /tmp/metrics_token &&
+        exec /bin/prometheus --config.file=/etc/prometheus/prometheus.yml
+        --storage.tsdb.path=/prometheus --storage.tsdb.retention.time=15d
+    environment:
+      METRICS_TOKEN: ${METRICS_TOKEN}
+    volumes:
+      - ./infra/monitoramento/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./infra/monitoramento/alertas.yml:/etc/prometheus/alertas.yml:ro
+      - prometheus_dados:/prometheus
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    ports: ["127.0.0.1:${PROMETHEUS_HOST_PORT:-9096}:9090"]
+    mem_limit: 256m
+
+  blackbox:
+    <<: *seguro
+    image: prom/blackbox-exporter:v0.27.0
+    read_only: true
+    volumes:
+      - ./infra/monitoramento/blackbox.yml:/etc/blackbox_exporter/config.yml:ro
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    mem_limit: 64m
+
+  grafana:
+    <<: *seguro
+    image: grafana/grafana-oss:13.0.2
+    user: "472"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_ANALYTICS_REPORTING_ENABLED: "false"
+      GF_SERVER_ROOT_URL: http://127.0.0.1:${GRAFANA_HOST_PORT:-3006}
+    volumes:
+      - ./infra/monitoramento/grafana/provisionamento:/etc/grafana/provisioning:ro
+      - ./infra/monitoramento/grafana/paineis:/var/lib/grafana/dashboards:ro
+      - grafana_dados:/var/lib/grafana
+    ports: ["127.0.0.1:${GRAFANA_HOST_PORT:-3006}:3000"]
+    depends_on: [prometheus]
+    mem_limit: 256m
+
+volumes:
+  prometheus_dados:
+  grafana_dados:

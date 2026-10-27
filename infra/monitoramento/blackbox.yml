@@ -1,0 +1,10 @@
+modules:
+  http_ok:
+    prober: http
+    timeout: 5s
+    http:
+      method: GET
+      preferred_ip_protocol: ip4
+      # o health do Supabase Auth pode pedir chave (401) — ainda assim prova que está no ar
+      valid_status_codes: [200, 401]
+      follow_redirects: false

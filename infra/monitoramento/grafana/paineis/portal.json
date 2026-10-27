@@ -1,0 +1,57 @@
+{
+  "uid": "portal-ase",
+  "title": "Portal Família Àṣẹ Omos Odé — Saúde",
+  "timezone": "America/Sao_Paulo",
+  "refresh": "30s",
+  "schemaVersion": 39,
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    {
+      "type": "stat", "title": "Site no ar", "gridPos": { "x": 0, "y": 0, "w": 6, "h": 5 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "min(probe_success{job=\"sondas\", alvo=~\".*web:3000/\"})", "refId": "A" }],
+      "fieldConfig": { "defaults": { "mappings": [{ "type": "value", "options": { "0": { "text": "FORA", "color": "red" }, "1": { "text": "OK", "color": "green" } } }], "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] } } },
+      "options": { "colorMode": "background", "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "stat", "title": "Banco (Supabase)", "gridPos": { "x": 6, "y": 0, "w": 6, "h": 5 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "max(portal_banco_disponivel)", "refId": "A" }],
+      "fieldConfig": { "defaults": { "mappings": [{ "type": "value", "options": { "0": { "text": "FORA", "color": "red" }, "1": { "text": "OK", "color": "green" } } }], "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "green", "value": 1 }] } } },
+      "options": { "colorMode": "background", "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "stat", "title": "Comprovantes apagados (privacidade)", "gridPos": { "x": 12, "y": 0, "w": 6, "h": 5 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "sum(portal_comprovantes_removidos_total)", "refId": "A" }],
+      "options": { "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "stat", "title": "Rotinas com erro (24h)", "gridPos": { "x": 18, "y": 0, "w": 6, "h": 5 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "sum(increase(portal_rotinas_total{resultado=\"erro\"}[24h])) or vector(0)", "refId": "A" }],
+      "fieldConfig": { "defaults": { "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] } } },
+      "options": { "colorMode": "background", "reduceOptions": { "calcs": ["lastNotNull"] } }
+    },
+    {
+      "type": "timeseries", "title": "Tempo de resposta das páginas (s)", "gridPos": { "x": 0, "y": 5, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "probe_duration_seconds{job=\"sondas\"}", "legendFormat": "{{alvo}}", "refId": "A" }]
+    },
+    {
+      "type": "timeseries", "title": "Memória do portal (MB)", "gridPos": { "x": 12, "y": 5, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "portal_process_resident_memory_bytes / 1e6", "legendFormat": "memória", "refId": "A" }]
+    },
+    {
+      "type": "timeseries", "title": "Rotinas automáticas", "gridPos": { "x": 0, "y": 13, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "increase(portal_rotinas_total[1h])", "legendFormat": "{{tarefa}} ({{resultado}})", "refId": "A" }]
+    },
+    {
+      "type": "timeseries", "title": "Atraso do event loop (s)", "gridPos": { "x": 12, "y": 13, "w": 12, "h": 8 },
+      "datasource": { "type": "prometheus", "uid": "prometheus" },
+      "targets": [{ "expr": "portal_nodejs_eventloop_lag_seconds", "legendFormat": "lag", "refId": "A" }]
+    }
+  ]
+}

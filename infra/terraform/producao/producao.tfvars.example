@@ -1,0 +1,6 @@
+# Copie para producao.tfvars (NÃO versionar). Token: defina SUPABASE_ACCESS_TOKEN no terminal.
+supabase_organizacao = "__id da organização__"
+senha_banco          = "__senha forte__"
+url_site             = "https://portal.seudominio.com.br"
+google_client_id     = ""
+google_client_secret = ""

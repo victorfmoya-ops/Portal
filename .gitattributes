@@ -1,0 +1,7 @@
+# Quebras de linha: LF em tudo (scripts .sh rodam em containers Linux); CRLF só nos scripts do Windows.
+* text=auto eol=lf
+*.ps1 text eol=crlf
+*.png binary
+*.jpg binary
+*.pdf binary
+*.mp4 binary

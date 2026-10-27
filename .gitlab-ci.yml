@@ -1,0 +1,205 @@
+# =====================================================================================
+# Portal Família Àṣẹ Omos Odé — Esteira de Desenvolvimento Seguro (DevSecOps) no GitLab CI
+# Ferramentas open source, rodando no GitLab Runner local (executor Docker).
+#
+#  segredos ─► sast ─► sca ─► testes ─► qualidade ─► build ─► scan-imagem ─► review ─► dast ─► limpeza
+#  Gitleaks   Semgrep  Trivy  Vitest    SonarQube    Docker   Trivy          Docker    OWASP ZAP
+#                      npm    pgTAP(RLS)                                     +smoke
+#                      audit  lint/tipos
+#                      SBOM   build
+#
+# POLÍTICA DE BLOQUEIO (security gate):
+#   CRÍTICA / ALTA ............... BLOQUEIA o pipeline
+#   MÉDIA / BAIXA / INFORMATIVA .. só REGISTRA (log + relatórios)
+#   Segredo vazado (Gitleaks) .... sempre bloqueia
+# Cada ferramenta: 1º mostra TUDO no log (sem falhar); 2º aplica o gate só em HIGH/CRITICAL.
+# Nada é publicado: a imagem fica no Docker local e o ambiente de revisão é destruído no fim.
+# =====================================================================================
+
+stages: [segredos, sast, sca, testes, qualidade, build, scan-imagem, review, dast, limpeza]
+
+variables:
+  IMAGE: "portal-ase-web:ci-${CI_COMMIT_SHORT_SHA}"
+  REVIEW_NAME: "portal-review-${CI_PIPELINE_ID}"
+  NODE_IMAGE: "node:22-alpine"
+  TRIVY_IMAGE: "aquasec/trivy:0.76.1"
+  PG_IMAGE: "public.ecr.aws/supabase/postgres:17.11.0.006"
+  LAB_NETWORK: "darkflow-devsecops"
+  GIT_DEPTH: "0"
+
+default:
+  interruptible: true
+
+.node_docker:
+  image: ${NODE_IMAGE}
+  before_script:
+    - apk add --no-cache docker-cli >/dev/null
+
+# ------------------------------------------------------------------ 1) SEGREDOS
+gitleaks:
+  stage: segredos
+  image:
+    name: zricethezav/gitleaks:v8.30.1
+    entrypoint: [""]
+  script:
+    - gitleaks git --config .gitleaks.toml --redact --verbose --report-format json --report-path gitleaks.json .
+  artifacts:
+    when: always
+    paths: [gitleaks.json]
+    expire_in: 7 days
+
+# ------------------------------------------------------------------ 2) SAST
+semgrep:
+  stage: sast
+  image: semgrep/semgrep:1.182.1
+  script:
+    # ERROR = alta/crítica (bloqueia) | WARNING = média | INFO = informativa
+    - semgrep scan --config p/typescript --config p/nextjs --config p/react --config p/owasp-top-ten --config p/secrets
+        --config p/sql-injection --metrics=off --text --json-output=semgrep.json app lib components proxy.ts supabase/migrations
+    - python3 -c "import json,sys,collections; r=json.load(open('semgrep.json'))['results']; c=collections.Counter(x['extra']['severity'] for x in r); print('Semgrep por severidade:', dict(c)); sys.exit(1 if c.get('ERROR') else 0)"
+  artifacts:
+    when: always
+    paths: [semgrep.json]
+    expire_in: 7 days
+
+# ------------------------------------------------------------------ 3) SCA
+trivy-fs:
+  stage: sca
+  image:
+    name: ${TRIVY_IMAGE}
+    entrypoint: [""]
+  script:
+    - trivy fs --format cyclonedx --output sbom.cdx.json .
+    - trivy fs --scanners vuln,misconfig,secret --exit-code 0 --format table .
+    - trivy fs --quiet --scanners vuln,misconfig,secret --severity HIGH,CRITICAL --exit-code 1 --format table .
+  artifacts:
+    when: always
+    paths: [sbom.cdx.json]
+    expire_in: 30 days
+
+npm-audit:
+  stage: sca
+  image: ${NODE_IMAGE}
+  script:
+    - npm audit || true
+    - npm audit --audit-level=high
+
+# ------------------------------------------------------------------ 4) TESTES
+testes-app:
+  stage: testes
+  image: ${NODE_IMAGE}
+  variables:
+    # valores fictícios só para compilar (nenhum serviço real é usado nos testes unitários)
+    NEXT_PUBLIC_SUPABASE_URL: "http://127.0.0.1:55421"
+    NEXT_PUBLIC_SUPABASE_ANON_KEY: "ci-chave-publica-ficticia-para-build"
+  script:
+    - npm ci --no-audit --no-fund
+    - npm run lint
+    - npm run typecheck
+    - npm run test:cov
+    - npm run build
+  coverage: '/Lines\s*:\s*(\d+\.?\d*)%/'
+  artifacts:
+    when: always
+    paths: [coverage/lcov.info]
+    expire_in: 7 days
+
+# Testes de segurança do banco (RLS + regras do filho) num Postgres descartável
+testes-banco:
+  extends: .node_docker
+  stage: testes
+  variables:
+    PG: "pg-ci-${CI_JOB_ID}"
+  script:
+    - docker run -d --name ${PG} --network ${LAB_NETWORK} -e POSTGRES_PASSWORD=ci-somente-teste ${PG_IMAGE}
+    - for i in $(seq 1 60); do docker exec ${PG} pg_isready -U postgres -h 127.0.0.1 >/dev/null 2>&1 && break; sleep 2; done; sleep 5
+    - docker exec -i ${PG} psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q < supabase/tests/ci/preparar-banco.sql
+    - for f in supabase/migrations/*.sql; do echo "migration $f"; docker exec -i ${PG} psql -U postgres -h 127.0.0.1 -d postgres -v ON_ERROR_STOP=1 -q < "$f"; done
+    - docker exec -i ${PG} psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q < supabase/seed.sql
+    - docker exec ${PG} psql -U supabase_admin -d postgres -qc "create extension if not exists pgtap"
+    - docker exec -i ${PG} psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q -tA < supabase/tests/rls_permissoes.test.sql | tee pgtap.txt
+    - "! grep -q '^not ok' pgtap.txt"
+    - echo "Testes de RLS aprovados: $(grep -c '^ok' pgtap.txt)"
+  after_script:
+    - docker rm -f pg-ci-${CI_JOB_ID} || true
+  artifacts:
+    when: always
+    paths: [pgtap.txt]
+    expire_in: 7 days
+
+# ------------------------------------------------------------------ 5) QUALIDADE
+sonarqube:
+  stage: qualidade
+  image:
+    name: sonarsource/sonar-scanner-cli:12.3
+    entrypoint: [""]
+  needs: [testes-app]
+  variables:
+    SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+  script:
+    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.timeout=300
+  rules:
+    - if: $SONAR_TOKEN
+
+# ------------------------------------------------------------------ 6) BUILD (uma vez)
+build-imagem:
+  extends: .node_docker
+  stage: build
+  script:
+    - docker build -t ${IMAGE}
+        --build-arg NEXT_PUBLIC_SUPABASE_URL=${REVIEW_SUPABASE_URL}
+        --build-arg NEXT_PUBLIC_SUPABASE_ANON_KEY=${REVIEW_SUPABASE_ANON_KEY}
+        --build-arg NEXT_PUBLIC_SITE_URL=http://${REVIEW_NAME}:3000 .
+
+# ------------------------------------------------------------------ 7) SCAN DA IMAGEM
+trivy-imagem:
+  stage: scan-imagem
+  image:
+    name: ${TRIVY_IMAGE}
+    entrypoint: [""]
+  needs: [build-imagem]
+  script:
+    - trivy image --scanners vuln --exit-code 0 --format table ${IMAGE}
+    - trivy image --quiet --scanners vuln --severity HIGH,CRITICAL --exit-code 1 --format table ${IMAGE}
+
+# ------------------------------------------------------------------ 8) REVIEW (sobe o portal do zero)
+deploy-review:
+  extends: .node_docker
+  stage: review
+  script:
+    # banco: o Supabase local do laboratório (host.docker.internal:55421), com dados fictícios
+    - docker run -d --name ${REVIEW_NAME} --network ${LAB_NETWORK} --add-host host.docker.internal:host-gateway
+        --read-only --tmpfs /tmp --tmpfs /app/.next/cache:uid=1001,gid=1001 --cap-drop ALL --security-opt no-new-privileges:true
+        -e SUPABASE_INTERNAL_URL=http://host.docker.internal:55421
+        -e SUPABASE_SERVICE_ROLE_KEY=${REVIEW_SUPABASE_SERVICE_ROLE_KEY}
+        -e CRON_SECRET=review-${CI_PIPELINE_ID}-segredo-descartavel
+        -e METRICS_TOKEN=review-${CI_PIPELINE_ID}-metricas ${IMAGE}
+    - for i in $(seq 1 30); do [ "$(docker inspect -f '{{.State.Health.Status}}' ${REVIEW_NAME})" = healthy ] && break; sleep 3; done
+    - docker inspect -f 'saude={{.State.Health.Status}}' ${REVIEW_NAME}
+    - docker run -i --rm --network ${LAB_NETWORK} -e BASE=http://${REVIEW_NAME}:3000 ${NODE_IMAGE} node - < infra/ci/smoke.mjs
+
+# ------------------------------------------------------------------ 9) DAST
+owasp-zap:
+  extends: .node_docker
+  stage: dast
+  script:
+    - docker run --name zap-${CI_JOB_ID} --network ${LAB_NETWORK} -u zap zaproxy/zap-stable:2.17.0
+        zap-baseline.py -t http://${REVIEW_NAME}:3000 -r zap-report.html -J zap-report.json -I || true
+    - docker cp zap-${CI_JOB_ID}:/zap/wrk/zap-report.html . && docker cp zap-${CI_JOB_ID}:/zap/wrk/zap-report.json .
+    - docker rm -f zap-${CI_JOB_ID}
+    # ZAP: Alto(3), Médio(2), Baixo(1), Informativo(0). Mostra tudo; bloqueia só em Alto.
+    - apk add --no-cache nodejs >/dev/null 2>&1 || true
+    - node -e "const r=require('./zap-report.json');const a=r.site.flatMap(s=>s.alerts);const n=k=>a.filter(x=>x.riskcode===k).length;console.log('ZAP => Alto:',n('3'),'Medio:',n('2'),'Baixo:',n('1'),'Info:',n('0'));a.forEach(x=>console.log(' -',x.riskdesc,'|',x.name));process.exit(n('3')?1:0)"
+  artifacts:
+    when: always
+    paths: [zap-report.html, zap-report.json]
+    expire_in: 30 days
+
+# ------------------------------------------------------------------ 10) LIMPEZA
+destruir-review:
+  extends: .node_docker
+  stage: limpeza
+  when: always
+  script:
+    - docker rm -f ${REVIEW_NAME} || true
+    - docker image rm ${IMAGE} || true

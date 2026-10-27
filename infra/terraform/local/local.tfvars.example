@@ -1,0 +1,7 @@
+# Copie para local.tfvars (NÃO versionar) e preencha com os valores do seu .env
+docker_host               = "npipe:////./pipe/docker_engine"
+supabase_anon_key         = "__copie do .env (NEXT_PUBLIC_SUPABASE_ANON_KEY)__"
+supabase_service_role_key = "__copie do .env (SUPABASE_SERVICE_ROLE_KEY)__"
+cron_secret               = "__copie do .env (CRON_SECRET)__"
+metrics_token             = "__copie do .env (METRICS_TOKEN)__"
+grafana_senha             = "__copie do .env (GRAFANA_ADMIN_PASSWORD)__"

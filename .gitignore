@@ -1,0 +1,36 @@
+# dependências e build
+node_modules/
+.next/
+out/
+coverage/
+next-env.d.ts
+*.tsbuildinfo
+
+# segredos (NUNCA versionar)
+.env
+.env.local
+.env.*.local
+!.env.example
+*.pem
+supabase/.temp/
+supabase/.branches/
+
+# arquivos de referência com DADOS REAIS (protótipo original e vídeo)
+referencia/
+
+# testes
+playwright-report/
+test-results/
+blob-report/
+
+# terraform
+infra/terraform/**/.terraform/
+infra/terraform/**/*.tfstate*
+infra/terraform/**/*.tfvars
+!infra/terraform/**/*.tfvars.example
+infra/terraform/**/.terraform.lock.hcl
+
+# sistema
+.DS_Store
+Thumbs.db
+*.log

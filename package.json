@@ -1,0 +1,47 @@
+{
+  "name": "portal-familia-ase",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portal do Centro Cultural Família Àṣẹ Omos Odé: site público + área restrita (filhos e administração)",
+  "scripts": {
+    "dev": "next dev -p 3000",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:test": "supabase test db",
+    "db:types": "supabase gen types typescript --local > lib/database.types.ts",
+    "audit:deps": "npm audit --audit-level=high"
+  },
+  "dependencies": {
+    "@prometheus-io/client": "0.16.1",
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.118.0",
+    "next": "16.4.3",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "server-only": "0.0.1",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.64.1",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "5.0.5",
+    "eslint": "10.13.0",
+    "eslint-config-next": "16.4.3",
+    "supabase": "2.122.0",
+    "typescript": "5.9.3",
+    "vitest": "5.0.5"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

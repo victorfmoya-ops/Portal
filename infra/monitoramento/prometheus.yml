@@ -1,0 +1,40 @@
+# Prometheus do portal. O token de /api/metrics vem da variável METRICS_TOKEN
+# (gravado em /tmp/metrics_token pelo comando de início do container).
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+rule_files:
+  - /etc/prometheus/alertas.yml
+
+scrape_configs:
+  - job_name: portal
+    metrics_path: /api/metrics
+    authorization:
+      type: Bearer
+      credentials_file: /tmp/metrics_token
+    static_configs:
+      - targets: ["web:3000"]
+
+  # Sondas externas: o site, a saúde do portal e o Supabase respondem?
+  - job_name: sondas
+    metrics_path: /probe
+    params:
+      module: [http_ok]
+    static_configs:
+      - targets:
+          - http://web:3000/
+          - http://web:3000/api/health
+          - http://web:3000/agenda
+          - http://host.docker.internal:55421/auth/v1/health
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: alvo
+      - target_label: __address__
+        replacement: blackbox:9115
+
+  - job_name: prometheus
+    static_configs:
+      - targets: ["localhost:9090"]

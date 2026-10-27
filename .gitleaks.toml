@@ -1,0 +1,15 @@
+# Gitleaks: regras padrão + exceções documentadas (somente dados de teste/fictícios).
+title = "portal-familia-ase"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Contas de demonstração do seed local e arquivos de exemplo (sem segredos reais)"
+paths = [
+  '''supabase/seed\.sql''',
+  '''\.env\.example''',
+  '''infra/terraform/.*\.tfvars\.example''',
+  '''tests/.*''',
+  '''package-lock\.json''',
+]
