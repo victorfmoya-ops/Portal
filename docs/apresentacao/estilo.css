@@ -1,0 +1,79 @@
+/* Estilo comum dos documentos em PDF (apresentação, guia de bolso e esteira). A4, impressão com fundo. */
+@page { size: A4; margin: 0 }
+* { box-sizing: border-box }
+:root { --ink: #121a2e; --muted: #5d6680; --gold: #b7791f; --gold-2: #f4b740; --navy: #0b1222; --blue: #2856d8;
+  --line: #e2e6ef; --soft: #f5f7fb; --green: #138a5e; --red: #c23345; --amber: #a66a00 }
+body { margin: 0; font-family: "Segoe UI", Roboto, Arial, sans-serif; color: var(--ink); font-size: 10.5pt; line-height: 1.45;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact }
+.pag { width: 210mm; height: 297mm; padding: 15mm 15mm 16mm; page-break-after: always; position: relative; overflow: hidden; background: #fff }
+.pag:last-child { page-break-after: auto }
+.pag::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, var(--gold-2), #e8892b 40%, var(--blue)) }
+
+/* Capa escura */
+.capa { background: radial-gradient(ellipse at 80% 0%, rgba(244,183,64,.35), transparent 55%), radial-gradient(ellipse at 0% 100%, rgba(40,86,216,.4), transparent 55%), var(--navy);
+  color: #fff; display: flex; flex-direction: column; justify-content: center; padding: 24mm }
+.capa::before { display: none }
+.capa .logo { width: 92px; height: 92px; border-radius: 50%; background: #fff; padding: 6px; box-shadow: 0 0 50px rgba(244,183,64,.45) }
+.capa .tipo { margin-top: 28px; font-size: 10pt; letter-spacing: .25em; text-transform: uppercase; color: var(--gold-2) }
+.capa h1 { font-size: 36pt; line-height: 1.02; margin: 10px 0 14px; letter-spacing: -.02em }
+.capa h1 em { font-style: normal; color: var(--gold-2) }
+.capa .sub { font-size: 13pt; color: #c9d1e4; max-width: 140mm }
+.capa .meta { position: absolute; left: 24mm; right: 24mm; bottom: 18mm; display: flex; justify-content: space-between; font-size: 9pt; color: #9aa4bd;
+  border-top: 1px solid rgba(255,255,255,.15); padding-top: 10px }
+.capa .grade { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.04) 1px, transparent 1px);
+  background-size: 14mm 14mm; pointer-events: none }
+
+/* Tipografia */
+.kicker { text-transform: uppercase; letter-spacing: .18em; color: var(--gold); font-size: 8.5pt; font-weight: 700; margin: 0 }
+h2 { font-size: 21pt; margin: 2px 0 8px; letter-spacing: -.01em; color: var(--navy) }
+h3 { font-size: 12pt; margin: 12px 0 5px; color: var(--blue) }
+h4 { font-size: 10.5pt; margin: 8px 0 3px; color: var(--navy) }
+p { margin: 5px 0 }
+ul, ol { margin: 4px 0; padding-left: 17px }
+li { margin: 2px 0 }
+code, .mono { font-family: Consolas, "Cascadia Mono", monospace; font-size: 9pt; background: var(--soft); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px }
+pre { font-family: Consolas, "Cascadia Mono", monospace; font-size: 8.6pt; line-height: 1.4; background: var(--navy); color: #e7ecf7; border-radius: 8px; padding: 8px 10px; margin: 6px 0; white-space: pre-wrap }
+pre .c { color: #8e98b0 }
+b, strong { color: var(--navy) }
+
+/* Tabelas */
+table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 9.2pt }
+th, td { border: 1px solid var(--line); padding: 4px 7px; text-align: left; vertical-align: top }
+th { background: var(--navy); color: #fff; font-weight: 600 }
+tr:nth-child(even) td { background: var(--soft) }
+
+/* Blocos */
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0 }
+.cards.dois { grid-template-columns: 1fr 1fr }
+.card { border: 1px solid var(--line); border-radius: 10px; padding: 9px 11px; background: #fff }
+.card h4 { margin-top: 0 }
+.card p, .card li { font-size: 9.3pt }
+.destaque { border-left: 4px solid var(--gold-2); background: #fff8e8; border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-size: 9.6pt }
+.alerta { border-left: 4px solid var(--red); background: #fdeef0; border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-size: 9.6pt }
+.ok { border-left: 4px solid var(--green); background: #e9f7f1; border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-size: 9.6pt }
+.selo { display: inline-block; border-radius: 20px; padding: 1px 9px; font-weight: 700; font-size: 8.5pt }
+.selo.bloq { background: #fdeef0; color: var(--red) } .selo.reg { background: #eef2fb; color: var(--blue) } .selo.ok { background: #e9f7f1; color: var(--green); border: 0; padding: 1px 9px; margin: 0 }
+
+/* Telas */
+.telas { display: flex; gap: 10px; justify-content: center; align-items: flex-start; margin: 8px 0 }
+.telas figure { margin: 0; flex: 1; text-align: center; min-width: 0 }
+.telas img { width: 100%; border-radius: 10px; border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(11,18,34,.18); object-fit: cover; object-position: top }
+.telas.cel img { height: var(--alt, 95mm); object-fit: cover; object-position: top }
+.lado { display: flex; gap: 10px; align-items: flex-start; margin: 8px 0 }
+.lado figure { margin: 0; flex: none; text-align: center }
+.lado figure img { height: var(--alt, 100mm); width: auto; border-radius: 10px; border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(11,18,34,.18) }
+.lado figcaption { font-size: 8.3pt; color: var(--muted); margin-top: 4px; max-width: 48mm }
+.lado .texto { flex: 1; min-width: 0 }
+.telas figcaption { font-size: 8.3pt; color: var(--muted); margin-top: 4px }
+.larga img { width: 100%; border-radius: 10px; border: 1px solid var(--line); box-shadow: 0 4px 14px rgba(11,18,34,.18) }
+
+/* Fluxo da esteira */
+.fluxo { display: flex; flex-wrap: wrap; gap: 4px; align-items: stretch; margin: 8px 0 }
+.fluxo .et { flex: 1 1 0; min-width: 0; border-radius: 8px; padding: 6px 4px; text-align: center; background: var(--navy); color: #fff; font-size: 8pt; line-height: 1.2 }
+.fluxo .et b { display: block; color: var(--gold-2); font-size: 8.6pt; margin-bottom: 2px }
+.fluxo .et small { color: #b8c1d8; font-size: 7.4pt }
+.fluxo .seta { align-self: center; color: var(--gold); font-weight: 700 }
+
+.duas { column-count: 2; column-gap: 9mm }
+.duas > * { break-inside: avoid }
+.rodape { position: absolute; bottom: 7mm; left: 15mm; right: 15mm; font-size: 7.8pt; color: var(--muted); display: flex; justify-content: space-between; border-top: 1px solid var(--line); padding-top: 4px }

@@ -47,8 +47,9 @@ já resolvidos, `REGISTRO-DE-ERROS.md`.
 | `app/` | Páginas e rotas. `page.tsx` = site; `agenda/` = calendário público; `entrar/`, `primeiro-acesso/`, `esqueci-senha/`, `redefinir-senha/`, `auth/*` = login; `app/filho/*` e `app/admin/*` = área restrita; `api/health`, `api/metrics`, `api/cron/[tarefa]` |
 | `components/` | Moldura do app (`AppShell`), calendário, avisos, formulários reutilizáveis |
 | `lib/` | Supabase (`supabase/`), sessão e permissões (`sessao.ts`), validação (`validacao.ts`), arquivos (`arquivos.ts`), datas, métricas |
-| `supabase/migrations/` | Banco: `…001` tabelas · `…002` RLS · `…003` regras de negócio · `…004` arquivos e automação |
-| `supabase/seed.sql` | Dados **fictícios** de desenvolvimento (contas demo) |
+| `supabase/migrations/` | Banco: `…001` tabelas · `…002` RLS · `…003` regras de negócio · `…004` arquivos e automação · `…005` espaço de aprendizado · `…006` equipes e arrecadação |
+| `supabase/seed.sql` | Dados **reais** da casa (organização, site, grupos, locais, rodízio, agenda) — sem pessoas |
+| `infra/ci/dados-de-teste.sql` | Dados **fictícios** só para os testes automáticos (contas demo `@exemplo.test`) |
 | `supabase/tests/` | Testes pgTAP de permissões; `ci/preparar-banco.sql` só para a esteira |
 | `tests/unit`, `tests/e2e` | Vitest e Playwright |
 | `infra/agendador` | Rotinas automáticas |
@@ -117,16 +118,45 @@ docker compose ps                # todos "Up" e o web "healthy"
 docker compose logs web --tail 50
 ```
 
-### Contas de demonstração (somente local, dados fictícios)
-| Perfil | E-mail | Senha |
-|---|---|---|
-| Administrador | `admin@exemplo.test` | `Axe2026demo` |
-| Filho (Grupo 1) | `filho1@exemplo.test` | `Axe2026demo` |
+### Acesso local
+O banco local começa **sem pessoas** (só os dados reais da casa). Crie o administrador:
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\criar-admin.ps1 -Email voce@exemplo.com -Nome "Seu nome"
+```
 
-### Zerar o banco local (volta aos dados de exemplo)
+### Zerar o banco local
+```powershell
+npx supabase db reset            # volta aos dados reais da casa (recrie o admin depois)
+```
+
+### Rodar os testes de ponta a ponta / pgTAP localmente (dados fictícios)
+Os testes usam contas fictícias (`admin@exemplo.test` / `filho1@exemplo.test`, senha `Axe2026demo`)
+que **não** estão no seed. Use um banco descartável:
 ```powershell
 npx supabase db reset
+Get-Content infra\ci\dados-de-teste.sql | docker exec -i supabase_db_portal-ase psql -U postgres -d postgres
+npm run test:e2e ; npx supabase test db
+npx supabase db reset            # limpa os dados fictícios ao terminar
 ```
+
+### Espaço de aprendizado (`/app/aprender`)
+Cantigas, rezas, regras da casa, fundamentos e orixás. Todos os membros ativos leem.
+Publicam: administradores e quem tem **cargo** de pai/mãe de santo, ogã ou ebomi
+(o cargo é escolhido na ficha do filho, em *Administração → Filhos*). Cada um edita/exclui
+as próprias lições; o administrador edita/exclui todas. Gravações só pelas funções
+`salvar_licao` / `excluir_licao` (registradas na auditoria).
+
+### Equipes e arrecadação das festas (`/app/equipes`, `/app/organizacao/<festa>`)
+- Cada membro tem **uma equipe** (a função fixa na casa); cada equipe tem um **coordenador**.
+  O admin cria as equipes, escolhe o coordenador e coloca as pessoas (na equipe ou na ficha do filho).
+- Por festa, cada equipe tem **tarefas**: o coordenador cria/exclui; quem é da equipe marca como feita.
+  O panorama mostra o andamento de todas as equipes na próxima festa.
+- A equipe marcada como **arrecadação** monta a **lista de compras** da festa. O cálculo é
+  total ÷ filhos ativos (papel *filho*, situação *ativo*), sempre para cima (reais inteiros ou centavos).
+  "Definir a contribuição" grava o valor na festa, cria a cobrança de quem ainda não tinha e
+  atualiza as que estão em aberto/recusadas; quem já pagou ou enviou comprovante não muda.
+- Gravações de tarefas, compras e rateio só pelas funções `salvar_tarefa`, `alternar_tarefa`,
+  `excluir_tarefa`, `salvar_compra`, `alternar_compra`, `excluir_compra`, `aplicar_rateio`.
 
 ## 7. Banco de dados
 
@@ -231,7 +261,7 @@ http://localhost:8929/root/portal-ase/-/pipelines. A esteira usa o Supabase loca
 | Tipo | Comando | O que cobre |
 |---|---|---|
 | Unitários | `npm test` / `npm run test:cov` | datas e fuso, validação de arquivos (assinatura), formulários |
-| Banco (RLS) | `npm run db:test` | 24 verificações da matriz de permissões |
+| Banco (RLS) | `npm run db:test` | 37 verificações da matriz de permissões (inclui aprendizado, equipes e arrecadação) |
 | Ponta a ponta | `npm run test:e2e` (portal rodando em :3000) | site, login, filho escolhe dia e envia comprovante, arquivo falso recusado, admin confirma, caixa, calendário |
 | Fumaça | `node infra/ci/smoke.mjs` (`BASE=...`) | saúde, páginas, proteção das rotas, cabeçalhos |
 

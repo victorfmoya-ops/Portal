@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { LISTA_CARGOS, LISTA_CATEGORIAS } from '@/lib/aprendizado';
 
 /** Validação de tudo que chega dos formulários (no servidor, antes de gravar). */
 const texto = (max: number) => z.string().trim().max(max, `Máximo de ${max} caracteres`);
@@ -52,7 +53,9 @@ export const membroSchema = z.object({
   nome: texto(120).min(2, 'Informe o nome'),
   email: z.email('E-mail inválido').max(254),
   papel: z.enum(['filho', 'admin']),
+  cargo: z.union([z.enum(LISTA_CARGOS), z.literal('')]).optional().transform((v) => (v ? v : null)),
   status: z.enum(['ativo', 'bloqueado']),
+  equipe_id: z.union([uuid, z.literal('')]).optional().transform((v) => (v ? v : null)),
   grupo_id: z.union([uuid, z.literal('')]).transform((v) => (v === '' ? null : v)),
   aniversario_dia: z.union([z.coerce.number().int().min(1).max(31), z.literal('')]).transform((v) => (v === '' ? null : v)),
   aniversario_mes: z.union([z.coerce.number().int().min(1).max(12), z.literal('')]).transform((v) => (v === '' ? null : v)),
@@ -147,3 +150,30 @@ export function validar<T extends z.ZodType>(schema: T, fd: FormData | Record<st
   if (r.success) return { ok: true, dados: r.data };
   return { ok: false, erro: r.error.issues[0]?.message ?? 'Dados inválidos' };
 }
+
+export const licaoSchema = z.object({
+  categoria: z.enum(LISTA_CATEGORIAS, 'Escolha a categoria'),
+  titulo: texto(140).min(3, 'Informe o título'),
+  conteudo: z.string().trim().min(1, 'Escreva o conteúdo').max(20000, 'Máximo de 20000 caracteres'),
+  midia_url: urlHttps,
+});
+
+export const equipeSchema = z.object({
+  nome: texto(60).min(2, 'Informe o nome da equipe'),
+  descricao: textoOpcional(300),
+  coordenador_id: z.union([uuid, z.literal('')]).transform((v) => (v === '' ? null : v)),
+  arrecadacao: checkbox,
+});
+
+export const tarefaSchema = z.object({
+  festa_id: uuid,
+  equipe_id: uuid,
+  descricao: texto(200).min(2, 'Descreva a tarefa'),
+});
+
+export const compraSchema = z.object({
+  festa_id: uuid,
+  item: texto(120).min(2, 'Informe o item'),
+  quantidade: z.coerce.number({ message: 'Quantidade inválida' }).gt(0, 'Quantidade inválida').max(100_000, 'Quantidade muito alta'),
+  valor_unitario: dinheiro,
+});

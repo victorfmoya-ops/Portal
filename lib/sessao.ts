@@ -10,11 +10,13 @@ export type Membro = {
   nome: string;
   email: string;
   papel: 'filho' | 'admin';
+  cargo: string | null;
+  equipe_id: string | null;
   grupo_id: string | null;
   status: 'ativo' | 'bloqueado';
 };
 
-const CAMPOS = 'id, org_id, nome, email, papel, grupo_id, status';
+const CAMPOS = 'id, org_id, nome, email, papel, cargo, equipe_id, grupo_id, status';
 
 /**
  * Sessão atual: usuário autenticado (Google ou e-mail) + cadastro na casa.

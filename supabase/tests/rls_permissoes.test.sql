@@ -2,10 +2,10 @@
 -- Testes de segurança (pgTAP): matriz de permissões do portal.
 -- Regra: o FILHO só grava 3 coisas (comprovante de mensalidade, comprovante
 -- de festa e dia da limpeza) e só por funções; nunca direto nas tabelas.
--- Rodar: npx supabase test db   (usa os dados fictícios do seed)
+-- Rodar: carregue antes infra/ci/dados-de-teste.sql (dados fictícios) e depois npx supabase test db
 -- =====================================================================
 begin;
-select plan(24);
+select plan(37);
 
 -- ---------- Visitante (anon) ----------
 set local role anon;
@@ -58,6 +58,22 @@ select throws_ok($$ select public.enviar_comprovante('mensalidade',
                       (select id from public.mensalidades limit 1), 'caminho/falso.pdf', current_date) $$,
                  '22023', null, 'comprovante exige arquivo no caminho certo do próprio filho');
 
+-- 📖 espaço de aprendizado: filho lê, mas sem cargo de ensino não publica
+select lives_ok($$ select count(*) from public.licoes $$, 'filho lê o espaço de aprendizado');
+select throws_ok($$ select public.salvar_licao(null, 'cantigas', 'Cantiga', 'letra') $$,
+                 '42501', null, 'filho sem cargo de ensino não publica lição');
+select throws_ok($$ insert into public.licoes (org_id, categoria, titulo, conteudo, autor_nome)
+                    values (public.minha_org(), 'regras', 'Regra', 'texto', 'eu') $$,
+                 '42501', null, 'ninguém grava lição direto na tabela');
+
+-- 🤝 equipes e arrecadação: filho comum não monta compras, não faz rateio nem cria tarefa
+select throws_ok($$ select public.salvar_compra((select id from public.festas limit 1), 'Flores', 1, 10) $$,
+                 '42501', null, 'filho sem coordenação não monta a lista de compras');
+select throws_ok($$ select public.aplicar_rateio((select id from public.festas limit 1)) $$,
+                 '42501', null, 'filho sem coordenação não define a contribuição');
+select throws_ok($$ select public.salvar_tarefa((select id from public.festas limit 1), (select id from public.equipes limit 1), 'Tarefa') $$,
+                 '42501', null, 'filho sem coordenação não cria tarefa');
+
 -- ---------- Outro filho tentando a rodada do Grupo 1 ----------
 reset role;
 set local role authenticated;
@@ -75,6 +91,29 @@ select lives_ok($$ select public.decidir_pagamento('mensalidade',
 select throws_ok($$ select public.decidir_pagamento('mensalidade',
                       (select id from public.mensalidades where status = 'aberta' limit 1), 'rejeitado', '') $$,
                  '22023', null, 'recusa exige motivo');
+
+select lives_ok($$ select public.salvar_licao(null, 'cantigas', 'Cantiga de Oxóssi', 'letra') $$, 'admin publica lição');
+
+-- admin monta a compra e faz o rateio: total ÷ filhos ativos, para cima
+select lives_ok($$ select public.salvar_compra((select id from public.festas where nome = 'Ipetê da Oxum'), 'Flores', 3, 100.50) $$,
+                'admin adiciona item à lista de compras');
+select is((public.aplicar_rateio((select id from public.festas where nome = 'Ipetê da Oxum')) ->> 'valor')::numeric,
+          ceil(301.50 / public.filhos_ativos()), 'rateio divide o total pelos filhos ativos, arredondando para cima');
+select is((select count(*)::int from public.contribuicoes_festa c join public.festas f on f.id = c.festa_id
+            where f.nome = 'Ipetê da Oxum' and c.status = 'aberta' and c.valor <> f.valor), 0,
+          'contribuições em aberto recebem o novo valor');
+select lives_ok($$ select public.salvar_tarefa((select id from public.festas limit 1), (select id from public.equipes limit 1), 'Comprar flores') $$,
+                'admin cria tarefa para a equipe');
+
+-- filho que coordena a arrecadação monta compras e define a contribuição
+update public.equipes set coordenador_id = (select id from public.membros where email = 'filho1@exemplo.test') where arrecadacao;
+reset role;
+set local role authenticated;
+select set_config('request.jwt.claims', '{"sub":"aaaaaaaa-0000-0000-0000-000000000002","role":"authenticated"}', true);
+select lives_ok($$ select public.salvar_compra((select id from public.festas limit 1), 'Velas', 10, 4) $$,
+                'coordenador(a) da arrecadação monta a lista de compras');
+select lives_ok($$ select public.aplicar_rateio((select id from public.festas limit 1), false) $$,
+                'coordenador(a) da arrecadação define a contribuição');
 
 select * from finish();
 rollback;

@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { Calendario, marcar } from '@/components/Calendario';
-import { diaSemana, fmt, hora, limitesDoMes, mesValido } from '@/lib/datas';
+import { Calendario } from '@/components/Calendario';
+import { SiteHeader } from '@/components/SiteHeader';
+import { diaSemana, fmt, hora, limitesDoMes, mesValido, nomeMes } from '@/lib/datas';
 import { envPublico } from '@/lib/env';
 import { criarClientePublico } from '@/lib/supabase/servico';
 
@@ -20,40 +20,42 @@ export default async function Agenda({ searchParams }: { searchParams: Promise<{
 
   return (
     <div className="pub">
-      <header className="site-header">
-        <Link className="brand" href="/">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/img/logo.png" alt="Brasão" />
-          <span>Família Àṣẹ Omos Odé</span>
-        </Link>
-        <nav className="site-nav">
-          <Link href="/">Início</Link>
-          <Link className="cta" href="/entrar">
-            Área restrita
-          </Link>
-        </nav>
-      </header>
+      <div className="aurora" aria-hidden />
+      <SiteHeader />
       <section className="section">
         <p className="kicker">Calendário de</p>
         <div className="bigword">TOQUES</div>
+        <p className="lead">Os toques abertos à comunidade. Toque num dia para ver os detalhes.</p>
         <div className="cal-box">
-          <Calendario mes={mes} caminho="/agenda" marcacoes={marcar(lista.map((e) => ({ data: e.data, tipo: 'toque' })))} legenda={['toque']} />
+          <Calendario
+            key={mes}
+            mes={mes}
+            caminho="/agenda"
+            itens={lista.map((e) => ({ id: e.id, data: e.data, tipo: 'toque' as const, titulo: e.titulo, hora: e.hora, detalhe: e.observacao }))}
+            legenda={['toque']}
+          />
         </div>
-        <ul className="agenda-list" style={{ marginTop: 18 }}>
+        <h3 className="sub">Toques de {nomeMes(mes)}</h3>
+        <ul className="timeline">
           {lista.length ? (
             lista.map((e) => (
               <li key={e.id}>
-                <b>{e.titulo}</b>
-                <span>
-                  {fmt(e.data)} ({diaSemana(e.data)}){e.hora ? ` · ${hora(e.hora)}` : ''}
-                  {e.observacao ? ` · ${e.observacao}` : ''}
+                <span className="quando">
+                  <b>{e.data.slice(8)}</b>
+                  {diaSemana(e.data).slice(0, 3)}
                 </span>
+                <div>
+                  <strong>{e.titulo}</strong>
+                  <span>
+                    {fmt(e.data)}
+                    {e.hora ? ` · ${hora(e.hora)}` : ''}
+                    {e.observacao ? ` · ${e.observacao}` : ''}
+                  </span>
+                </div>
               </li>
             ))
           ) : (
-            <li>
-              <span>Nenhum toque neste mês.</span>
-            </li>
+            <li className="vazio">Nenhum toque neste mês.</li>
           )}
         </ul>
       </section>

@@ -1,4 +1,5 @@
 import { BotaoEnviar } from '@/components/BotaoEnviar';
+import { CampoArquivo } from '@/components/CampoArquivo';
 import { hojeISO } from '@/lib/datas';
 
 /** Formulário de envio de comprovante (PDF ou imagem, até 10 MB). */
@@ -19,10 +20,10 @@ export function FormComprovante({
         <span>Data do pagamento</span>
         <input type="date" name="data_pagamento" defaultValue={hojeISO()} max={hojeISO()} required />
       </label>
-      <label className="f">
+      <div className="f">
         <span>Comprovante (PDF ou imagem, até 10 MB)</span>
-        <input type="file" name="arquivo" accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.heic,application/pdf,image/*" required />
-      </label>
+        <CampoArquivo name="arquivo" accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.heic,application/pdf,image/*" required />
+      </div>
       <BotaoEnviar className="btn small">📎 Enviar comprovante</BotaoEnviar>
     </form>
   );

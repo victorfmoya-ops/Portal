@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { brl, diaSemana, diasDaRodada, fmt, gradeDoMes, hojeISO, limitesDoMes, mesAnterior, mesSeguinte, mesValido, nomeMes, somarDias } from '@/lib/datas';
+import { brl, diaSemana, diasAte, diasDaRodada, fmt, gradeDoMes, hojeISO, limitesDoMes, mesAnterior, mesSeguinte, mesValido, nomeMes, somarDias } from '@/lib/datas';
 
 describe('datas', () => {
   it('formata datas no padrão brasileiro', () => {
@@ -43,5 +43,14 @@ describe('datas', () => {
 
   it('formata dinheiro em reais', () => {
     expect(brl(60)).toMatch(/R\$\s?60,00/);
+  });
+});
+
+describe('diasAte', () => {
+  it('conta os dias até o próximo toque', () => {
+    expect(diasAte('2026-10-17', '2026-10-17')).toBe(0);
+    expect(diasAte('2026-10-18', '2026-10-17')).toBe(1);
+    expect(diasAte('2026-11-14', '2026-10-27')).toBe(18);
+    expect(diasAte('2026-10-01', '2026-10-27')).toBe(-26);
   });
 });

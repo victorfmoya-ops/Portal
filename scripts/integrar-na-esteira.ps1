@@ -62,7 +62,7 @@ catch { $projeto = Invoke-RestMethod -Method Post -Headers $h "$api/projects" -B
 $variaveis = @(
   @{ key = 'SONAR_HOST_URL'; value = 'http://sonarqube:9000'; masked = 'false' },
   @{ key = 'SONAR_TOKEN'; value = $tokenSonar; masked = 'true' },
-  # ambiente de revisão usa o Supabase LOCAL (dados fictícios do seed)
+  # ambiente de revisão usa o Supabase LOCAL (dados fictícios de infra/ci/dados-de-teste.sql)
   @{ key = 'REVIEW_SUPABASE_URL'; value = 'http://host.docker.internal:55421'; masked = 'false' },
   @{ key = 'REVIEW_SUPABASE_ANON_KEY'; value = $portal['NEXT_PUBLIC_SUPABASE_ANON_KEY']; masked = 'true' },
   @{ key = 'REVIEW_SUPABASE_SERVICE_ROLE_KEY'; value = $portal['SUPABASE_SERVICE_ROLE_KEY']; masked = 'true' }

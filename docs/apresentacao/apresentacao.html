@@ -3,142 +3,179 @@
 <head>
 <meta charset="utf-8">
 <title>Portal Família Àṣẹ Omos Odé — Apresentação</title>
-<style>
-  @page { size: A4; margin: 0 }
-  * { box-sizing: border-box }
-  body { margin: 0; font-family: "Segoe UI", Roboto, Arial, sans-serif; color: #17233f; font-size: 11pt; line-height: 1.45 }
-  .pag { width: 210mm; min-height: 297mm; padding: 16mm 16mm 14mm; page-break-after: always; position: relative; background: #fff }
-  .pag:last-child { page-break-after: auto }
-  .capa { background: linear-gradient(180deg, rgba(10,14,25,.55), rgba(10,14,25,.9)), url('../../public/img/fundo-inicial.png') center/cover; color: #fff;
-    display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center }
-  .capa img { width: 120px; background: #fff; border-radius: 18px; padding: 8px }
-  .capa h1 { font-size: 34pt; font-style: italic; margin: 18px 0 4px }
-  .capa .sub { font-size: 14pt; opacity: .95 }
-  .capa .rod { position: absolute; bottom: 14mm; font-size: 9.5pt; opacity: .8 }
-  h2 { color: #c08a1e; font-style: italic; font-size: 22pt; margin: 0 0 4px }
-  .kicker { text-transform: uppercase; letter-spacing: .08em; color: #6b7488; font-size: 9pt; margin: 0 }
-  h3 { color: #174f96; margin: 14px 0 6px; font-size: 13pt }
-  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 10pt }
-  th, td { border: 1px solid #e3e8f3; padding: 6px 8px; text-align: left; vertical-align: top }
-  th { background: #eef2fb; color: #174f96 }
-  .telas { display: flex; gap: 10px; justify-content: center; margin: 10px 0 }
-  .telas figure { margin: 0; flex: 1; text-align: center }
-  .telas img { width: 100%; max-height: 150mm; object-fit: cover; object-position: top; border: 1px solid #e3e8f3; border-radius: 10px; box-shadow: 0 4px 12px rgba(23,35,63,.12) }
-  .telas figcaption { font-size: 9pt; color: #6b7488; margin-top: 4px }
-  .site img { max-height: 120mm }
-  .tres { list-style: none; padding: 0; counter-reset: n; margin: 8px 0 }
-  .tres li { counter-increment: n; background: #e7f0fb; border-radius: 10px; padding: 8px 12px 8px 40px; margin-bottom: 6px; position: relative }
-  .tres li::before { content: counter(n); position: absolute; left: 12px; top: 7px; background: #1f66c2; color: #fff; width: 20px; height: 20px; border-radius: 50%; text-align: center; font-weight: 700; font-size: 10pt; line-height: 20px }
-  .selo { display: inline-block; background: #e4f6ee; color: #17a673; border-radius: 20px; padding: 2px 10px; font-weight: 700; font-size: 9pt }
-  .nota { background: #fff6e0; border: 1px solid #f1dca0; color: #8a6400; border-radius: 10px; padding: 8px 12px; font-size: 9.5pt }
-  .rodape { position: absolute; bottom: 8mm; left: 16mm; right: 16mm; font-size: 8.5pt; color: #6b7488; display: flex; justify-content: space-between }
-  ul { margin: 6px 0; padding-left: 18px }
-</style>
+<link rel="stylesheet" href="estilo.css">
 </head>
 <body>
 
 <section class="pag capa">
-  <img src="../../public/img/logo.png" alt="Brasão">
-  <h1>Portal Família Àṣẹ Omos Odé</h1>
-  <div class="sub">Site público e área restrita para filhos e administração</div>
-  <div class="sub" style="margin-top:6px;font-size:11pt">Centro Cultural Família Àṣẹ Omos Odé · São Paulo — SP · desde 1980</div>
-  <div class="rod">Apresentação · 27/10/2026 · telas com dados fictícios de demonstração</div>
+  <div class="grade"></div>
+  <img class="logo" src="../../public/img/logo.png" alt="Brasão">
+  <div class="tipo">Apresentação do projeto</div>
+  <h1>Portal Família<br><em>Àṣẹ</em> Omos Odé</h1>
+  <div class="sub">Site público e área restrita para os filhos e a administração do Centro Cultural Família Àṣẹ Omos Odé — fé, axé e tradição desde 1980.</div>
+  <div class="meta"><span>São Paulo — SP · Odé/Oxóssi, Oxum e Obaluaê (Azauani)</span><span>Versão 2 · 27/10/2026</span></div>
 </section>
 
 <section class="pag">
-  <p class="kicker">O que é</p>
+  <p class="kicker">Visão geral</p>
   <h2>Um portal, dois mundos</h2>
-  <p>Funciona no <b>computador e no celular</b> e pode ser instalado na tela inicial como um aplicativo, sem loja de apps.
-     O visual segue o esboço aprovado no vídeo <b>“Esboço Portal”</b>.</p>
-  <ul>
-    <li><b>Site público:</b> história, Orixás, calendário de toques, fotos e vídeos das festas, jogo de búzios pelo WhatsApp e localização.</li>
-    <li><b>Área restrita:</b> cada filho acompanha sua vida na casa; a administração organiza tudo num só lugar.</li>
-  </ul>
+  <p>Funciona no <b>computador e no celular</b> e pode ser instalado na tela inicial como um aplicativo, sem passar pela loja de apps.</p>
+  <div class="cards dois">
+    <div class="card"><h4>🌐 Site público</h4><p>História da casa, Orixás, <b>calendário de toques</b>, fotos e vídeos das festas, jogo de búzios pelo WhatsApp e localização.</p></div>
+    <div class="card"><h4>🔒 Área restrita</h4><p>Cada filho acompanha a sua vida na casa; a administração e os coordenadores organizam tudo num só lugar.</p></div>
+  </div>
   <h3>Problemas que resolve</h3>
   <table>
-    <tr><th>Antes</th><th>Com o portal</th></tr>
-    <tr><td>Escala de limpeza em planilha e grupo de mensagens</td><td>Rodízio quinzenal por grupo; cada filho escolhe o seu dia; meta de <b>5 limpezas por ano</b></td></tr>
-    <tr><td>Comprovantes espalhados no WhatsApp</td><td>Envio no portal; a administração confirma com um toque; o arquivo é apagado depois</td></tr>
-    <tr><td>Funções e toques avisados de boca</td><td><b>Calendário de funções</b> (dia e responsáveis) e <b>calendário de toques</b></td></tr>
-    <tr><td>Caixa da casa em caderno</td><td><b>Controle financeiro</b>: entradas, saídas, saldo e resultado do mês</td></tr>
-    <tr><td>Fichas em papel</td><td>Cadastro Geral + Cadastro de filho sempre à mão</td></tr>
+    <tr><th style="width:42%">Antes</th><th>Com o portal</th></tr>
+    <tr><td>Escala de limpeza em planilha e grupo de mensagens</td><td>Rodízio quinzenal por grupo; cada filho escolhe o seu dia; meta de <b>5 limpezas por ano</b> acompanhada</td></tr>
+    <tr><td>Comprovantes de mensalidade e festa espalhados no WhatsApp</td><td>O filho envia o comprovante no portal; a administração confirma com um toque; o arquivo é apagado depois</td></tr>
+    <tr><td>Toques, funções e obrigações avisados de boca</td><td><b>Calendário mensal</b> com cada compromisso no seu dia, cores por tipo e detalhes ao tocar</td></tr>
+    <tr><td>Conta da festa feita no papel, valor de cada filho calculado à mão</td><td><b>Arrecadação</b>: lista de compras, total e divisão automática pelos filhos ativos</td></tr>
+    <tr><td>Cada um sem saber direito a sua função na festa</td><td><b>Equipes</b> com coordenador e tarefas por festa, com o andamento de cada uma</td></tr>
+    <tr><td>Cantigas, rezas e regras passadas só de boca</td><td><b>Espaço de aprendizado</b> publicado pelos pais de santo, ogãs e ebomis</td></tr>
+    <tr><td>Caixa da casa em caderno; fichas dos filhos em papel</td><td>Controle financeiro (entradas, saídas, saldo) e cadastro completo, sempre à mão</td></tr>
   </table>
-  <div class="telas site">
-    <figure><img src="../telas/01-site-inicio.png" alt=""><figcaption>Página inicial</figcaption></figure>
-    <figure><img src="../telas/02-site-calendario-toques.png" alt=""><figcaption>Calendário de toques (público)</figcaption></figure>
-  </div>
+  <div class="destaque">As telas deste documento usam <b>dados fictícios de demonstração</b> (nomes e valores marcados com “exemplo”). O portal real começa sem nenhum dado de exemplo.</div>
   <div class="rodape"><span>Portal Família Àṣẹ Omos Odé</span><span>2</span></div>
 </section>
 
 <section class="pag">
-  <p class="kicker">Área do filho</p>
-  <h2>Tudo da casa na palma da mão</h2>
-  <p>O filho <b>vê</b> funções e obrigações (com aviso nos Oros e se está escalado), as semanas do seu grupo,
-     mensalidade e festas, toques, aniversariantes, colegas do grupo (só nomes) e os seus dados.
-     O filho <b>faz só três coisas</b>:</p>
-  <ol class="tres">
-    <li><b>Escolhe o dia da limpeza</b> na semana do seu grupo — até 1 mês antes.</li>
-    <li><b>Envia o comprovante da mensalidade</b> (PDF ou foto).</li>
-    <li><b>Envia o comprovante da contribuição da festa.</b></li>
-  </ol>
-  <div class="telas">
-    <figure><img src="../telas/04-filho-inicio.png" alt=""><figcaption>Início</figcaption></figure>
-    <figure><img src="../telas/05-filho-escala.png" alt=""><figcaption>Escala de limpeza</figcaption></figure>
-    <figure><img src="../telas/06-filho-calendario.png" alt=""><figcaption>Calendário</figcaption></figure>
+  <p class="kicker">Site público</p>
+  <h2>A cara da casa na internet</h2>
+  <p>Visual escuro, moderno e tecnológico, com brilho dourado e animações suaves. O destaque do topo mostra o <b>próximo toque</b> e quantos dias faltam.</p>
+  <div class="larga"><img src="../telas/01-site-inicio.png" alt="Página inicial"></div>
+  <div class="telas" style="margin-top:10px">
+    <figure style="flex:2"><img src="../telas/16-site-orixas.png" alt="Orixás" style="height:72mm"><figcaption>Nossos Orixás</figcaption></figure>
+    <figure style="flex:1"><img src="../telas/17-site-celular.png" alt="Site no celular" style="height:72mm"><figcaption>No celular</figcaption></figure>
   </div>
+  <ul>
+    <li><b>Seções:</b> A Casa · Orixás · Calendário de toques · Galeria · Jogo de búzios (abre o WhatsApp com a mensagem pronta — nada é enviado sozinho) · Onde estamos.</li>
+    <li>Textos, cor e fotos são alterados pela administração, sem programador.</li>
+  </ul>
   <div class="rodape"><span>Portal Família Àṣẹ Omos Odé</span><span>3</span></div>
 </section>
 
 <section class="pag">
-  <p class="kicker">Administração</p>
-  <h2>A casa organizada</h2>
-  <ul>
-    <li><b>Comprovantes para analisar</b> logo na entrada: confirmar ou recusar (com motivo para o filho).</li>
-    <li><b>Rodízio:</b> gera as rodadas do ano, marca os locais limpos, ajusta o dia de cada filho, mostra quem está abaixo da meta.</li>
-    <li><b>Controle financeiro:</b> saldo geral, receitas e despesas do mês, categorias, mensalidades lançadas sozinhas todo dia 1º.</li>
-    <li><b>Calendário de funções e toques:</b> cada função com dia, hora e quem vai fazer; toques publicados no site.</li>
-    <li><b>Festas, Filhos, Grupos, Áreas restritas, Galeria, Aparência do site e Auditoria.</b></li>
-  </ul>
-  <div class="telas">
-    <figure><img src="../telas/08-admin-inicio.png" alt=""><figcaption>Início</figcaption></figure>
-    <figure><img src="../telas/09-admin-financeiro.png" alt=""><figcaption>Controle financeiro</figcaption></figure>
-    <figure><img src="../telas/10-admin-calendario.png" alt=""><figcaption>Calendário de funções e toques</figcaption></figure>
+  <p class="kicker">Calendário</p>
+  <h2>Toques, funções e obrigações num calendário de verdade</h2>
+  <p>O mês inteiro em grade, com cada compromisso <b>dentro do seu dia</b>. Cores separam os tipos; tocar num dia abre os detalhes (horário, referência, responsáveis). Os botões da legenda ligam e desligam cada tipo.</p>
+  <div class="larga"><img src="../telas/02-site-calendario-toques.png" alt="Calendário público de toques" style="height:84mm;object-fit:cover;object-position:top"></div>
+  <div class="lado" style="--alt:104mm">
+    <figure><img src="../telas/06-filho-calendario.png" alt="Calendário do filho"><figcaption>Filho: “você está escalado(a)”</figcaption></figure>
+    <figure><img src="../telas/10-admin-calendario.png" alt="Calendário da administração"><figcaption>Administração</figcaption></figure>
+    <div class="texto">
+      <table>
+        <tr><th>Cor</th><th>Tipo</th></tr>
+        <tr><td>🟡</td><td><b>Toque</b> — os públicos aparecem também no site</td></tr>
+        <tr><td>🔵</td><td><b>Função</b> — com responsáveis</td></tr>
+        <tr><td>🔴</td><td><b>Obrigação</b> — presença obrigatória (todo “Oro” já entra assim)</td></tr>
+        <tr><td>🟢</td><td><b>Minha limpeza</b> — só o próprio filho vê</td></tr>
+      </table>
+      <p style="font-size:9.3pt">Toques, funções e obrigações são cadastrados pela administração, com data, hora e referência. O filho vê o calendário da casa com os seus próprios compromissos destacados.</p>
+    </div>
   </div>
   <div class="rodape"><span>Portal Família Àṣẹ Omos Odé</span><span>4</span></div>
 </section>
 
 <section class="pag">
+  <p class="kicker">Área do filho</p>
+  <h2>Tudo o que o filho precisa, no celular</h2>
+  <div class="telas cel">
+    <figure><img src="../telas/04-filho-inicio.png" alt="Início do filho"><figcaption>Início: funções, obrigações e semana do grupo</figcaption></figure>
+    <figure><img src="../telas/05-filho-escala.png" alt="Escala"><figcaption>Escala de limpeza</figcaption></figure>
+    <figure><img src="../telas/07-filho-mensalidade.png" alt="Mensalidade"><figcaption>Mensalidade e comprovante</figcaption></figure>
+  </div>
+  <p>O filho <b>vê</b>: funções e obrigações (com aviso de presença obrigatória e se está escalado), as semanas do seu grupo, mensalidade e festas, toques, aniversariantes, colegas do grupo (só nomes), a sua equipe e os seus dados.</p>
+  <h3>O filho faz poucas coisas — e só as dele</h3>
+  <ol>
+    <li><b>Escolhe o dia da limpeza</b> na semana do seu grupo, até <b>1 mês antes</b>.</li>
+    <li><b>Envia o comprovante</b> da mensalidade e da contribuição das festas (PDF ou foto).</li>
+    <li>Se for da equipe, <b>marca as tarefas da festa</b> como feitas.</li>
+  </ol>
+  <p>Os dados pessoais são <b>somente leitura</b> para o filho; correções são feitas pela administração. O botão <b>Sair</b> fica no topo de todas as telas.</p>
+  <div class="rodape"><span>Portal Família Àṣẹ Omos Odé</span><span>5</span></div>
+</section>
+
+<section class="pag">
+  <p class="kicker">Novidades</p>
+  <h2>Equipes, arrecadação e aprendizado</h2>
+  <div class="telas cel">
+    <figure><img src="../telas/14-equipes.png" alt="Equipes"><figcaption>Panorama das equipes</figcaption></figure>
+    <figure><img src="../telas/15-arrecadacao.png" alt="Arrecadação"><figcaption>Lista de compras da festa</figcaption></figure>
+    <figure><img src="../telas/13-aprender.png" alt="Espaço de aprendizado"><figcaption>Espaço de aprendizado</figcaption></figure>
+  </div>
+  <div class="cards">
+    <div class="card"><h4>🤝 Equipes</h4><p>Cada filho tem uma <b>função fixa</b> na casa. Cada equipe tem um <b>coordenador</b>, que cria as tarefas de cada festa. O panorama mostra o andamento de todas as equipes.</p></div>
+    <div class="card"><h4>💰 Arrecadação</h4><p>O coordenador monta a <b>lista de compras</b>. O portal soma e divide pelos filhos ativos, sempre para cima. Um toque cria a cobrança de cada filho.</p></div>
+    <div class="card"><h4>📖 Aprendizado</h4><p>Cantigas, rezas, regras da casa e fundamentos. <b>Pais/mães de santo, ogãs e ebomis</b> publicam; todos os filhos estudam. Busca e categorias.</p></div>
+  </div>
+  <div class="destaque"><b>Exemplo da arrecadação:</b> compras de R$ 2.090,00 ÷ 42 filhos = R$ 49,77 cada — arredondado para <b>R$ 50,00</b> (a sobra fica no caixa da festa). Quem já pagou não tem o valor alterado.</div>
+  <div class="rodape"><span>Portal Família Àṣẹ Omos Odé</span><span>6</span></div>
+</section>
+
+<section class="pag">
+  <p class="kicker">Administração</p>
+  <h2>A casa organizada num só lugar</h2>
+  <div class="telas cel">
+    <figure><img src="../telas/08-admin-inicio.png" alt="Início do administrador"><figcaption>Início: comprovantes para analisar</figcaption></figure>
+    <figure><img src="../telas/09-admin-financeiro.png" alt="Financeiro"><figcaption>Controle financeiro</figcaption></figure>
+    <figure><img src="../telas/11-admin-rodizio.png" alt="Rodízio"><figcaption>Rodízio de limpeza</figcaption></figure>
+  </div>
+  <ul>
+    <li><b>Comprovantes</b> logo na entrada: confirmar ou recusar (com motivo que o filho vê).</li>
+    <li><b>Rodízio:</b> gera as rodadas do ano, marca os locais limpos e acompanha quem está abaixo da meta.</li>
+    <li><b>Financeiro:</b> saldo, receitas e despesas do mês, mensalidades lançadas automaticamente todo dia 1º.</li>
+    <li><b>Calendário, festas, equipes</b> (com coordenadores) e <b>cadastro dos filhos</b> (equipe e cargo na casa).</li>
+    <li><b>Grupos, áreas restritas</b> (ex.: Casa dos Exus), <b>galeria, aparência do site</b> e <b>auditoria</b> (quem fez o quê).</li>
+  </ul>
+  <div class="rodape"><span>Portal Família Àṣẹ Omos Odé</span><span>7</span></div>
+</section>
+
+<section class="pag">
   <p class="kicker">Confiança</p>
-  <h2>Segurança, privacidade e qualidade</h2>
-  <h3>Acesso</h3>
-  <ul>
-    <li><b>Entrar com Google</b> ou <b>e-mail e senha</b> (com confirmação por e-mail).</li>
-    <li><b>Só entra quem a administração cadastrou</b> — ter conta Google não basta.</li>
-    <li>Cada filho vê só os próprios dados, garantido <b>pelo banco de dados</b> e testado a cada mudança <span class="selo">24 verificações</span></li>
-  </ul>
-  <h3>Privacidade (LGPD)</h3>
-  <ul>
-    <li>Comprovantes em área privada e <b>apagados</b> após a análise.</li>
-    <li>Sem dados bancários, cartão, Pix ou senha de banco: pagamentos continuam fora do portal.</li>
-    <li>Termo de consentimento no primeiro acesso; aniversário só com dia e mês.</li>
-  </ul>
-  <h3>Qualidade</h3>
+  <h2>Acesso, privacidade e qualidade</h2>
+  <div class="cards dois">
+    <div class="card"><h4>🔐 Quem entra</h4><ul>
+      <li>Entrar com <b>Google</b> ou <b>e-mail e senha</b> (com confirmação de e-mail).</li>
+      <li><b>Só entra quem a administração cadastrou</b>; ter conta no Google não basta.</li>
+      <li>Cada pessoa vê só o que lhe cabe — garantido <b>pelo banco de dados</b>, não só pela tela.</li></ul></div>
+    <div class="card"><h4>🛡️ Privacidade (LGPD)</h4><ul>
+      <li>Termo de consentimento no primeiro acesso; aniversário só com dia e mês.</li>
+      <li>Comprovantes em área privada e <b>apagados</b> depois da análise.</li>
+      <li>O portal <b>não guarda</b> dados bancários, cartão, Pix nem senha de banco.</li></ul></div>
+  </div>
+  <h3>Qualidade por trás do portal</h3>
   <table>
-    <tr><th>Esteira DevSecOps (a cada mudança)</th><th>Também</th></tr>
-    <tr><td>Busca de senhas vazadas · análise de segurança do código · bibliotecas vulneráveis · testes · qualidade (SonarQube) · varredura da imagem · teste de invasão básico (OWASP ZAP). <b>Falhas altas ou críticas bloqueiam.</b></td>
-        <td>Testes automáticos de ponta a ponta · monitoramento com alertas · rotinas automáticas (mensalidades e limpeza de comprovantes)</td></tr>
+    <tr><th>O quê</th><th>Como</th></tr>
+    <tr><td>Desenvolvimento seguro (DevSecOps)</td><td>A cada mudança, uma esteira automática procura senhas vazadas, falhas no código, bibliotecas vulneráveis e problemas na imagem, roda os testes e faz um teste de invasão básico (OWASP ZAP). <b>Falha alta ou crítica bloqueia a publicação.</b></td></tr>
+    <tr><td>Testes automáticos</td><td>24 testes unitários, <b>37 verificações de permissão</b> no banco e testes de ponta a ponta no navegador (filho e administrador).</td></tr>
+    <tr><td>Monitoramento</td><td>Painel com site no ar, banco, tempo de resposta e alertas automáticos.</td></tr>
+    <tr><td>Rotinas automáticas</td><td>Mensalidades do mês e limpeza dos comprovantes, sem ninguém precisar lembrar.</td></tr>
   </table>
-  <h3>Próximos passos</h3>
+  <div class="rodape"><span>Portal Família Àṣẹ Omos Odé</span><span>8</span></div>
+</section>
+
+<section class="pag">
+  <p class="kicker">Próximos passos</p>
+  <h2>Do protótipo ao ar</h2>
   <table>
-    <tr><th>Etapa</th><th>Quem</th></tr>
-    <tr><td>Revisar telas e textos (história, fotos, vídeos)</td><td>Casa</td></tr>
-    <tr><td>Definir domínio e hospedagem</td><td>Casa + equipe técnica</td></tr>
-    <tr><td>Ligar o “Entrar com Google” (guia pronto)</td><td>Equipe técnica</td></tr>
-    <tr><td>Cadastrar filhos e grupos</td><td>Administração</td></tr>
-    <tr><td>Revisão de segurança/LGPD e publicação</td><td>Equipe técnica</td></tr>
+    <tr><th style="width:62%">Etapa</th><th>Quem</th></tr>
+    <tr><td>Revisar telas e textos (história da casa, fotos, vídeos)</td><td>Casa</td></tr>
+    <tr><td>Cadastrar os filhos (e-mail de cada um), os grupos e as equipes com seus coordenadores</td><td>Administração da casa</td></tr>
+    <tr><td>Definir quem tem cargo de ensino (pai/mãe de santo, ogã, ebomi) para publicar no espaço de aprendizado</td><td>Administração da casa</td></tr>
+    <tr><td>Decidir o endereço do site (domínio) e a hospedagem</td><td>Casa + equipe técnica</td></tr>
+    <tr><td>Ligar o “Entrar com Google” (passo a passo em <code>GUIA-LOGIN-GOOGLE.md</code>)</td><td>Equipe técnica</td></tr>
+    <tr><td>Revisão de segurança e LGPD antes dos dados reais; publicação</td><td>Equipe técnica</td></tr>
+    <tr><td>Aviso aos filhos pelo WhatsApp com o link e as instruções de primeiro acesso</td><td>Casa</td></tr>
   </table>
-  <p class="nota"><b>Custos:</b> login com Google e plano gratuito do Supabase não têm custo para começar. Domínio (anual) e hospedagem são pagos — valores consultados na contratação. Nenhuma contratação foi feita.</p>
-  <div class="rodape"><span>Portal Família Àṣẹ Omos Odé · Axé! 🙏</span><span>5</span></div>
+  <h3>Custos</h3>
+  <ul>
+    <li><b>Gratuitos:</b> login com Google; plano gratuito do Supabase (banco, login e arquivos) para começar.</li>
+    <li><b>Pagos:</b> domínio (<code>.com.br</code>, anual) e hospedagem do portal. Os valores mudam — consultar na hora da contratação.</li>
+    <li>Nenhuma contratação foi feita: hoje tudo roda no ambiente de desenvolvimento.</li>
+  </ul>
+  <div class="ok" style="margin-top:14mm;text-align:center;font-size:12pt"><b>Axé!</b> 🙏</div>
+  <div class="rodape"><span>Portal Família Àṣẹ Omos Odé</span><span>9</span></div>
 </section>
 
 </body>

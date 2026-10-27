@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { salvarMembro } from '../acoes';
 import { BotaoEnviar } from '@/components/BotaoEnviar';
+import { CARGOS } from '@/lib/aprendizado';
 import type { Database } from '@/lib/database.types';
 
 type MembroLinha = Database['public']['Tables']['membros']['Row'];
@@ -11,10 +12,12 @@ export function FormMembro({
   membro,
   ficha,
   grupos,
+  equipes = [],
 }: {
   membro?: MembroLinha | null;
   ficha?: FichaLinha | null;
   grupos: { id: string; numero: number }[];
+  equipes?: { id: string; nome: string }[];
 }) {
   const v = (x: string | number | null | undefined) => (x == null ? '' : String(x));
   return (
@@ -53,6 +56,28 @@ export function FormMembro({
           </select>
         </label>
       </div>
+      <label className="f">
+        <span>Equipe (função fixa na casa)</span>
+        <select name="equipe_id" defaultValue={v(membro?.equipe_id)}>
+          <option value="">— sem equipe —</option>
+          {equipes.map((e) => (
+            <option key={e.id} value={e.id}>
+              {e.nome}
+            </option>
+          ))}
+        </select>
+      </label>
+      <label className="f">
+        <span>Cargo na casa (pai/mãe de santo, ogã e ebomi publicam no espaço de aprendizado)</span>
+        <select name="cargo" defaultValue={v(membro?.cargo)}>
+          <option value="">— sem cargo —</option>
+          {Object.entries(CARGOS).map(([valor, rotulo]) => (
+            <option key={valor} value={valor}>
+              {rotulo}
+            </option>
+          ))}
+        </select>
+      </label>
       <div className="two">
         <label className="f">
           <span>Situação</span>

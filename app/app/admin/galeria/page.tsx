@@ -1,6 +1,7 @@
 import { adicionarVideo, enviarFoto, excluirMidia } from '../acoes';
 import { AppShell } from '@/components/AppShell';
 import { BotaoEnviar } from '@/components/BotaoEnviar';
+import { CampoArquivo } from '@/components/CampoArquivo';
 import { urlFotoGaleria } from '@/lib/publico';
 import { exigirAdmin } from '@/lib/sessao';
 
@@ -35,10 +36,10 @@ export default async function Galeria() {
           <div className="muted">Nenhuma foto publicada.</div>
         )}
         <form action={enviarFoto} style={{ marginTop: 8 }}>
-          <label className="f">
+          <div className="f">
             <span>Adicionar foto (JPG, PNG ou WEBP, até 5 MB)</span>
-            <input type="file" name="arquivo" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required />
-          </label>
+            <CampoArquivo name="arquivo" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required />
+          </div>
           <label className="f">
             <span>Legenda (opcional)</span>
             <input name="titulo" maxLength={120} placeholder="Ex.: Ipetê da Oxum 2026" />

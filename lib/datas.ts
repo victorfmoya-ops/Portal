@@ -89,3 +89,12 @@ export function limitesDoMes(mes: string): { de: string; ate: string } {
   const ultimo = new Date(Date.UTC(a, m, 0)).getUTCDate();
   return { de: `${mes}-01`, ate: `${mes}-${String(ultimo).padStart(2, '0')}` };
 }
+
+export const DIAS_ABREV = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+
+/** Dias de hoje até a data (0 = hoje, 1 = amanhã, negativo = já passou). */
+export function diasAte(iso: string, hoje = hojeISO()): number {
+  const [a, m, d] = partes(iso);
+  const [ah, mh, dh] = partes(hoje);
+  return Math.round((Date.UTC(a, m - 1, d) - Date.UTC(ah, mh - 1, dh)) / 86_400_000);
+}

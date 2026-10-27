@@ -1,5 +1,5 @@
 import { AppShell } from '@/components/AppShell';
-import { Calendario, marcar, type Marcacao } from '@/components/Calendario';
+import { Calendario, type ItemCalendario } from '@/components/Calendario';
 import { diaSemana, fmt, hora, limitesDoMes, mesValido } from '@/lib/datas';
 import { exigirFilho } from '@/lib/sessao';
 
@@ -18,21 +18,28 @@ export default async function CalendarioFilho({ searchParams }: { searchParams: 
     supabase.from('funcao_responsaveis').select('funcao_id').eq('membro_id', membro.id),
   ]);
   const meus = new Set((resp.data ?? []).map((r) => r.funcao_id));
-  const itens: { data: string; tipo: Marcacao }[] = [
-    ...(toques.data ?? []).map((t) => ({ data: t.data, tipo: 'toque' as const })),
-    ...(funcoes.data ?? []).map((f) => ({ data: f.data, tipo: (f.obrigatorio ? 'obrig' : 'funcao') as Marcacao })),
-    ...(limpezas.data ?? []).map((l) => ({ data: l.dia, tipo: 'limpeza' as const })),
+  const itens: ItemCalendario[] = [
+    ...(toques.data ?? []).map((t) => ({ id: t.id, data: t.data, tipo: 'toque' as const, titulo: t.titulo, hora: t.hora, detalhe: t.observacao })),
+    ...(funcoes.data ?? []).map((f) => ({
+      id: f.id,
+      data: f.data,
+      tipo: f.obrigatorio ? ('obrig' as const) : ('funcao' as const),
+      titulo: f.titulo,
+      hora: f.hora,
+      detalhe: f.referencia,
+      destaque: meus.has(f.id) ? '⭐ Você está escalado(a)' : f.obrigatorio ? 'Presença obrigatória' : null,
+    })),
+    ...(limpezas.data ?? []).map((l) => ({ id: `limpeza-${l.dia}`, data: l.dia, tipo: 'limpeza' as const, titulo: 'Minha limpeza', detalhe: 'Rodízio do seu grupo' })),
   ];
 
   return (
     <AppShell titulo="Área do filho" papel="filho" voltar="/app/filho" ativo="/app/filho/calendario">
       <div className="card">
-        <h3>📅 Calendário da casa</h3>
-        <Calendario mes={mes} caminho="/app/filho/calendario" marcacoes={marcar(itens)} legenda={['toque', 'funcao', 'obrig', 'limpeza']} />
+        <Calendario key={mes} mes={mes} caminho="/app/filho/calendario" itens={itens} legenda={['toque', 'funcao', 'obrig', 'limpeza']} />
       </div>
 
       <div className="card">
-        <h3>🔔 Funções do mês</h3>
+        <h3>🔔 Funções e obrigações do mês</h3>
         {funcoes.data?.length ? (
           funcoes.data.map((f) => (
             <div className="item" key={f.id}>

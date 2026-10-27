@@ -2,12 +2,14 @@ import { describe, expect, it } from 'vitest';
 import {
   caixaSchema,
   funcaoSchema,
+  licaoSchema,
   membroSchema,
   primeiroAcessoSchema,
   siteSchema,
   validar,
   videoSchema,
 } from '@/lib/validacao';
+import { podeEnsinar } from '@/lib/aprendizado';
 
 describe('validação dos formulários', () => {
   it('senha do primeiro acesso: 8+ caracteres com letras e números e confirmação igual', () => {
@@ -45,5 +47,21 @@ describe('validação dos formulários', () => {
     expect(validar(siteSchema, base)).toMatchObject({ ok: true, dados: { loja_url: null, meta_limpezas_ano: 5 } });
     expect(validar(siteSchema, { ...base, cor: 'red' }).ok).toBe(false);
     expect(validar(siteSchema, { ...base, whatsapp: '+55 (11) 9' }).ok).toBe(false);
+  });
+});
+
+describe('espaço de aprendizado', () => {
+  it('só quem tem cargo de ensino (ou admin) publica', () => {
+    expect(podeEnsinar({ papel: 'admin', cargo: null })).toBe(true);
+    expect(podeEnsinar({ papel: 'filho', cargo: 'oga' })).toBe(true);
+    expect(podeEnsinar({ papel: 'filho', cargo: 'ebomi' })).toBe(true);
+    expect(podeEnsinar({ papel: 'filho', cargo: 'ekedi' })).toBe(false);
+    expect(podeEnsinar({ papel: 'filho', cargo: null })).toBe(false);
+  });
+
+  it('valida a lição', () => {
+    expect(validar(licaoSchema, { categoria: 'cantigas', titulo: 'Cantiga de Oxóssi', conteudo: 'letra', midia_url: '' }).ok).toBe(true);
+    expect(validar(licaoSchema, { categoria: 'segredo', titulo: 'Cantiga', conteudo: 'letra', midia_url: '' }).ok).toBe(false);
+    expect(validar(licaoSchema, { categoria: 'rezas', titulo: 'Reza', conteudo: 'texto', midia_url: 'http://inseguro' })).toMatchObject({ ok: false });
   });
 });

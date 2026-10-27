@@ -1,7 +1,7 @@
 import { excluirFuncao, excluirToque, salvarFuncao, salvarToque } from '../acoes';
 import { AppShell } from '@/components/AppShell';
 import { BotaoEnviar } from '@/components/BotaoEnviar';
-import { Calendario, marcar, type Marcacao } from '@/components/Calendario';
+import { Calendario, type ItemCalendario } from '@/components/Calendario';
 import { diaSemana, fmt, hojeISO, hora, limitesDoMes, mesValido } from '@/lib/datas';
 import { exigirAdmin } from '@/lib/sessao';
 
@@ -25,16 +25,34 @@ export default async function CalendarioAdmin({ searchParams }: { searchParams: 
     supabase.from('eventos').select('id, titulo, data, hora, observacao, publico').gte('data', de).lte('data', ate).order('data'),
     supabase.from('membros').select('id, nome, grupo:grupos(numero)').eq('status', 'ativo').eq('papel', 'filho').order('nome'),
   ]);
-  const itens: { data: string; tipo: Marcacao }[] = [
-    ...(toques.data ?? []).map((t) => ({ data: t.data, tipo: 'toque' as const })),
-    ...(funcoes.data ?? []).map((f) => ({ data: f.data, tipo: (f.obrigatorio ? 'obrig' : 'funcao') as Marcacao })),
+  const itens: ItemCalendario[] = [
+    ...(toques.data ?? []).map((t) => ({
+      id: t.id,
+      data: t.data,
+      tipo: 'toque' as const,
+      titulo: t.titulo,
+      hora: t.hora,
+      detalhe: t.observacao,
+      destaque: t.publico ? null : 'Só para filhos (fora do site)',
+    })),
+    ...(funcoes.data ?? []).map((f) => {
+      const nomes = f.funcao_responsaveis.map((r) => r.membro?.nome).filter(Boolean);
+      return {
+        id: f.id,
+        data: f.data,
+        tipo: f.obrigatorio ? ('obrig' as const) : ('funcao' as const),
+        titulo: f.titulo,
+        hora: f.hora,
+        detalhe: f.referencia,
+        destaque: nomes.length ? `Responsáveis: ${nomes.join(', ')}` : f.obrigatorio ? 'Presença obrigatória de todos os filhos' : null,
+      };
+    }),
   ];
 
   return (
     <AppShell titulo="Administração" papel="admin" voltar="/app/admin" ativo="/app/admin/calendario">
       <div className="card">
-        <h3>📅 Calendário da casa</h3>
-        <Calendario mes={mes} caminho="/app/admin/calendario" marcacoes={marcar(itens)} legenda={['toque', 'funcao', 'obrig']} />
+        <Calendario key={mes} mes={mes} caminho="/app/admin/calendario" itens={itens} legenda={['toque', 'funcao', 'obrig']} />
       </div>
 
       <div className="card">

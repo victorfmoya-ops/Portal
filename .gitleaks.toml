@@ -8,6 +8,7 @@ useDefault = true
 description = "Contas de demonstração do seed local e arquivos de exemplo (sem segredos reais)"
 paths = [
   '''supabase/seed\.sql''',
+  '''infra/ci/dados-de-teste\.sql''',
   '''\.env\.example''',
   '''infra/terraform/.*\.tfvars\.example''',
   '''tests/.*''',

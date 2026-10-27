@@ -10,15 +10,16 @@ export default async function FichaFilho({ params }: { params: Promise<{ id: str
   const { supabase } = await exigirAdmin();
   const id = z.uuid().safeParse((await params).id);
   if (!id.success) notFound();
-  const [{ data: membro }, { data: ficha }, { data: grupos }] = await Promise.all([
+  const [{ data: membro }, { data: ficha }, { data: grupos }, { data: equipes }] = await Promise.all([
     supabase.from('membros').select('*').eq('id', id.data).maybeSingle(),
     supabase.from('fichas').select('*').eq('membro_id', id.data).maybeSingle(),
     supabase.from('grupos').select('id, numero').order('numero'),
+    supabase.from('equipes').select('id, nome').order('nome'),
   ]);
   if (!membro) notFound();
   return (
     <AppShell titulo="Administração" papel="admin" voltar="/app/admin/filhos" ativo="/app/admin">
-      <FormMembro membro={membro} ficha={ficha} grupos={grupos ?? []} />
+      <FormMembro membro={membro} ficha={ficha} grupos={grupos ?? []} equipes={equipes ?? []} />
     </AppShell>
   );
 }

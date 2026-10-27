@@ -1,5 +1,10 @@
 import type { Metadata, Viewport } from 'next';
+import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
+
+// baixadas no build e servidas pelo próprio portal (a CSP só permite fontes 'self')
+const textos = Inter({ subsets: ['latin', 'latin-ext', 'vietnamese'], variable: '--font-body', display: 'swap' });
+const titulos = Space_Grotesk({ subsets: ['latin', 'latin-ext', 'vietnamese'], variable: '--font-display', display: 'swap' });
 
 export const metadata: Metadata = {
   title: 'Centro Cultural Família Àṣẹ Omos Odé',
@@ -10,7 +15,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#1f66c2',
+  themeColor: '#05070d',
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover',
@@ -18,7 +23,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" className={`${textos.variable} ${titulos.variable}`}>
       <body>{children}</body>
     </html>
   );

@@ -116,6 +116,7 @@ testes-banco:
     - docker exec -i ${PG} psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q < supabase/tests/ci/preparar-banco.sql
     - for f in supabase/migrations/*.sql; do echo "migration $f"; docker exec -i ${PG} psql -U postgres -h 127.0.0.1 -d postgres -v ON_ERROR_STOP=1 -q < "$f"; done
     - docker exec -i ${PG} psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q < supabase/seed.sql
+    - docker exec -i ${PG} psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q < infra/ci/dados-de-teste.sql
     - docker exec ${PG} psql -U supabase_admin -d postgres -qc "create extension if not exists pgtap"
     - docker exec -i ${PG} psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q -tA < supabase/tests/rls_permissoes.test.sql | tee pgtap.txt
     - "! grep -q '^not ok' pgtap.txt"

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
+import { SiteHeader } from '@/components/SiteHeader';
 import { carregarSite } from '@/lib/publico';
 
 export const dynamic = 'force-dynamic';
@@ -10,6 +11,8 @@ export default async function Loja() {
   if (site.loja_url && /^https:\/\//.test(site.loja_url)) redirect(site.loja_url);
   return (
     <div className="pub">
+      <div className="aurora" aria-hidden />
+      <SiteHeader />
       <section className="section" style={{ textAlign: 'center' }}>
         <div className="bigword">🛒 LOJA VIRTUAL</div>
         <p>A loja virtual está em manutenção. Em breve!</p>

@@ -32,7 +32,8 @@ export async function carregarSite() {
 
     const [site, eventos, midia] = await Promise.all([
       db.from('site_config').select('*').eq('org_id', org.id).maybeSingle(),
-      db.from('eventos').select('id, titulo, data, hora, observacao').eq('org_id', org.id).gte('data', hojeISO()).order('data').limit(8),
+      // do 1º dia do mês atual em diante: alimenta o calendário do mês e a lista de próximos toques
+      db.from('eventos').select('id, titulo, data, hora, observacao').eq('org_id', org.id).gte('data', `${hojeISO().slice(0, 7)}-01`).order('data').limit(40),
       db.from('midia').select('id, tipo, titulo, storage_path, url').eq('org_id', org.id).order('criado_em', { ascending: false }).limit(30),
     ]);
     const s = site.data;

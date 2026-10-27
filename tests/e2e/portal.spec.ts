@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { entrar, foto } from './ajuda';
 
-/* Roteiro de ponta a ponta com os dados FICTÍCIOS do seed (supabase db reset). */
+/* Roteiro de ponta a ponta com os dados FICTÍCIOS de infra/ci/dados-de-teste.sql (rode-o após o supabase db reset). */
 
 test.describe.configure({ mode: 'serial' });
 
@@ -17,7 +17,7 @@ test('site público: seções do protótipo e calendário de toques', async ({ p
   await page.getByRole('link', { name: /calendário de toques/i }).click();
   await expect(page).toHaveURL(/\/agenda/);
   await page.goto('/agenda?mes=2026-11');
-  await expect(page.getByText('Toque de Exu')).toBeVisible();
+  await expect(page.locator('.calx-dia').getByText('Toque de Exu')).toBeVisible();
   await foto(page, '02-site-calendario-toques');
 });
 
@@ -44,7 +44,8 @@ test('filho: escolhe o dia da limpeza e envia comprovante', async ({ page }) => 
   await foto(page, '05-filho-escala');
 
   await page.goto('/app/filho/calendario?mes=2026-11');
-  await expect(page.getByText('Preparação do barracão (exemplo)')).toBeVisible();
+  await page.locator('.calx-cel', { hasText: /^12/ }).click();
+  await expect(page.locator('.calx-dia').getByText('Preparação do barracão (exemplo)')).toBeVisible();
   await expect(page.getByText('Você está escalado(a)').first()).toBeVisible();
   await foto(page, '06-filho-calendario');
 
@@ -94,7 +95,17 @@ test('admin: confirma comprovante, controla caixa e calendário', async ({ page 
   await page.getByRole('button', { name: 'Salvar função' }).click();
   await expect(page.getByText(/Função cadastrada/)).toBeVisible();
   await expect(page.locator('.pill', { hasText: 'Presença obrigatória de todos os filhos' })).toBeVisible();
+  await page.locator('.calx-cel', { hasText: /^20/ }).click();
+  await expect(page.locator('.calx-dia .tag', { hasText: 'Obrigação' })).toBeVisible();
   await foto(page, '10-admin-calendario');
+
+  await page.goto('/app/aprender');
+  await page.getByText('+ Publicar uma lição').click();
+  await page.locator('select[name="categoria"]').selectOption('cantigas');
+  await page.locator('input[name="titulo"]').fill('Cantiga de Oxóssi (teste)');
+  await page.locator('textarea[name="conteudo"]').fill('Letra da cantiga (teste E2E)');
+  await page.getByRole('button', { name: 'Publicar lição' }).click();
+  await expect(page.getByText('Lição publicada ✔')).toBeVisible();
 
   await page.goto('/app/admin/rodizio');
   await expect(page.getByText(/Meta de limpezas no ano/)).toBeVisible();

@@ -10,7 +10,9 @@ powershell -ExecutionPolicy Bypass -File scripts\configurar-ambiente.ps1   # Sup
 npm run dev                                                               # http://127.0.0.1:3000
 docker compose up -d --build                                              # portal :3020, Grafana :3006
 ```
-Contas de demonstração (dados fictícios): `admin@exemplo.test` / `filho1@exemplo.test`, senha `Axe2026demo`.
+O banco começa só com os dados reais da casa (sem pessoas). Crie seu acesso de administrador com
+`powershell -ExecutionPolicy Bypass -File scripts\criar-admin.ps1 -Email voce@exemplo.com -Nome "Seu nome"`.
+Os testes automáticos usam dados fictícios à parte: `infra/ci/dados-de-teste.sql`.
 
 ## Verificações
 ```powershell
