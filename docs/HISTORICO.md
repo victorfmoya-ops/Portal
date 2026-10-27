@@ -26,7 +26,8 @@ Site público + área restrita (PWA) da casa de santo. Visual fiel ao protótipo
 | Banco: 4 migrations, RLS em todas as tabelas, funções de negócio, Storage | ✅ pronto |
 | Testes: unitários, 24 pgTAP (RLS), 4 E2E Playwright, fumaça | ✅ passando |
 | Docker (portal + agendador + Prometheus + Blackbox + Grafana) | ✅ rodando em 127.0.0.1 |
-| Esteira GitLab (Gitleaks, Semgrep, Trivy, npm audit, testes, SonarQube, build, Trivy imagem, review, ZAP) | ✅ configurada — resultado do pipeline no `REGISTRO-DE-ERROS.md` |
+| Esteira GitLab (Gitleaks, Semgrep, Trivy, npm audit, testes, SonarQube, build, Trivy imagem, review, ZAP) | ✅ pipeline #6 aprovado nas 12 etapas (http://localhost:8929/root/portal-ase/-/pipelines) |
+| Automação de privacidade (apagar comprovante analisado) testada de ponta a ponta | ✅ |
 | Terraform local (validado + plan: 9 recursos) e produção (validado, **não aplicado**) | ✅ |
 | Documentos: apresentação (MD + PDF), configurações e processos, registro de erros, guia do Google | ✅ |
 

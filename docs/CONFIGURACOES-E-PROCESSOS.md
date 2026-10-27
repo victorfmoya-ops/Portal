@@ -255,7 +255,9 @@ docker run --rm -v "${PWD}\infra\terraform\local:/w" -w /w hashicorp/terraform:1
 - RLS em todas as tabelas; filho sem nenhuma policy de escrita; funções com `search_path` fixo e checagem de permissão.
 - Vínculo de conta só com e-mail **confirmado** (impede tomar o cadastro de outra pessoa).
 - Senhas: mínimo 8, letras e números; troca de senha exige login recente.
-- Cabeçalhos: CSP, HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy; sem `X-Powered-By`.
+- Cabeçalhos: CSP, HSTS, X-Frame-Options DENY, nosniff, Referrer-Policy, Permissions-Policy, COOP e CORP; sem `X-Powered-By`.
+- Imagem Docker sem npm/yarn/corepack (Trivy: 0 vulnerabilidades altas/críticas).
+- OWASP ZAP: 0 alto; médios/baixos avaliados um a um em `REGISTRO-DE-ERROS.md` (seção "Resultado do OWASP ZAP").
 - Links só `https://`; HTML escapado pelo React (sem `innerHTML`); redirecionamentos só para caminhos internos.
 - Containers: usuário sem privilégio, sistema de arquivos só leitura, `cap_drop: ALL`, `no-new-privileges`, limites de memória.
 - Comprovantes privados e **apagados** após a análise; auditoria somente leitura.

@@ -150,6 +150,21 @@ quando o mesmo problema voltar.
 
 Relatórios completos: `docs/seguranca/zap-report.html` e `.json`.
 
+## 27/10/2026 — Revisão visual (capturas da apresentação)
+
+### E22 · "Novembro **De** 2026" e legenda do calendário sem as bolinhas
+- **Causa 1:** `text-transform: capitalize` deixa maiúscula a primeira letra de **cada** palavra.
+  **Solução:** só a primeira letra (`::first-letter`), também no nome do mês da mensalidade.
+- **Causa 2:** o tamanho da bolinha (`.dot`) só era definido dentro das células da tabela; na legenda ela ficava com
+  largura zero. **Solução:** estilo da `.dot` vale em qualquer lugar.
+
+## Resultado final da esteira
+Pipeline **#6 aprovado em todas as 12 etapas** (27/10/2026): gitleaks, semgrep, trivy-fs, npm-audit, testes-app,
+testes-banco (24/24), sonarqube, build-imagem, trivy-imagem (0 alto/crítico), deploy-review (7/7 verificações),
+owasp-zap (0 alto · 3 médios · 1 baixo · 4 info) e destruir-review.
+Histórico das tentativas: #1 YAML inválido (E18) · #4 Trivy bloqueou a imagem (E20; o job do banco foi repetido — E19) ·
+#5 ZAP sem pasta montada (E21) · **#6 ✅**.
+
 ### E16 · Segredo local exibido num relatório
 - **Sintoma:** o relatório do Trivy (varredura de segredos) mostrou parte do `.env` local, incluindo o `CRON_SECRET`
   de desenvolvimento.
