@@ -119,7 +119,7 @@ testes-banco:
     - docker exec ${PG} psql -U supabase_admin -d postgres -qc "create extension if not exists pgtap"
     - docker exec -i ${PG} psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q -tA < supabase/tests/rls_permissoes.test.sql | tee pgtap.txt
     - "! grep -q '^not ok' pgtap.txt"
-    - echo "Testes de RLS aprovados: $(grep -c '^ok' pgtap.txt)"
+    - 'echo "Testes de RLS aprovados = $(grep -c "^ok" pgtap.txt)"'
   after_script:
     - docker rm -f pg-ci-${CI_JOB_ID} || true
   artifacts:
