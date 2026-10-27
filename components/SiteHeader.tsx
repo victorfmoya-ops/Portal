@@ -14,7 +14,6 @@ export function SiteHeader({ inicio = false }: { inicio?: boolean }) {
       </Link>
       <nav className="site-nav" aria-label="Site">
         <a href={`${p}#casa`}>A Casa</a>
-        <a href={`${p}#orixas`}>Orixás</a>
         <Link href="/agenda">Agenda</Link>
         <a href={`${p}#galeria`}>Galeria</a>
         <a href={`${p}#buzios`}>Búzios</a>

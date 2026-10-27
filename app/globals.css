@@ -97,16 +97,6 @@ a { color: var(--brand-d) }
   .pub .section, .pub .alt .inner { animation: sobe linear both; animation-timeline: view(); animation-range: entry 0% entry 35% }
 }
 
-.pub .cards3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 10px }
-.pub .cards3 .c { --cor: var(--gold); position: relative; overflow: hidden; background: var(--card); border: 1px solid var(--line); border-radius: 22px; padding: 30px 24px; text-align: left;
-  transition: transform .3s, border-color .3s, box-shadow .3s }
-.pub .cards3 .c.verde { --cor: #2fd39a } .pub .cards3 .c.ouro { --cor: #f4b740 } .pub .cards3 .c.terra { --cor: #c98a5a }
-.pub .cards3 .c::before { content: ''; position: absolute; inset: auto -40% -60% auto; width: 220px; height: 220px; border-radius: 50%; background: var(--cor); filter: blur(70px); opacity: .22; transition: opacity .3s }
-.pub .cards3 .c:hover { transform: translateY(-6px); border-color: color-mix(in srgb, var(--cor) 50%, transparent); box-shadow: 0 20px 60px rgba(0,0,0,.4) }
-.pub .cards3 .c:hover::before { opacity: .45 }
-.pub .cards3 .c .e { font-size: 30px; width: 60px; height: 60px; display: grid; place-items: center; border-radius: 16px; background: color-mix(in srgb, var(--cor) 16%, transparent); border: 1px solid color-mix(in srgb, var(--cor) 35%, transparent) }
-.pub .cards3 .c h4 { margin: 18px 0 6px; font-size: 20px; font-family: var(--font-tit) }
-.pub .cards3 .c p { font-size: 14px; color: var(--muted); margin: 0 }
 
 .pub .agenda-grid { display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 26px; align-items: start }
 .pub .agenda-grid .sub { margin-top: 4px }
@@ -156,7 +146,6 @@ a { color: var(--brand-d) }
   .pub .agenda-grid { grid-template-columns: 1fr }
 }
 @media (max-width: 640px) {
-  .pub .cards3 { grid-template-columns: 1fr }
   .pub .gal { grid-template-columns: 1fr 1fr }
   .pub .site-header .brand span { display: none }
   .pub .section, .pub .alt .inner { padding: 64px 16px }

@@ -33,7 +33,7 @@ Site público + área restrita (PWA) da casa de santo. Visual fiel ao protótipo
 ## Estado atual
 | Item | Situação |
 |---|---|
-| Site público (hero, FÉ, Orixás, toques, festas, búzios, local) + calendário de toques | ✅ pronto |
+| Site público (hero, FÉ, toques, festas, búzios, local) + calendário de toques | ✅ pronto |
 | Login Google/e-mail, primeiro acesso, esqueci a senha, termo de consentimento, acesso negado | ✅ pronto (Google depende da configuração — `GUIA-LOGIN-GOOGLE.md`) |
 | Área do filho (início, escala, calendário, mensalidade, festas, grupo, meus dados) | ✅ pronto |
 | Administração (rodízio, financeiro, festas, calendário de funções/toques, filhos, grupos, galeria, site, áreas restritas, auditoria) | ✅ pronto |

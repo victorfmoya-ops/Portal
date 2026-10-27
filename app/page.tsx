@@ -7,12 +7,6 @@ import { MESES, diaSemana, diasAte, fmt, hojeISO, hora } from '@/lib/datas';
 
 export const dynamic = 'force-dynamic';
 
-const ORIXAS = [
-  { e: '🏹', n: 'Odé / Oxóssi', d: 'Caçador · fartura · o mato', cor: 'verde' },
-  { e: '💛', n: 'Oxum', d: 'Rio · ouro · amor', cor: 'ouro' },
-  { e: '🌾', n: 'Obaluaê / Azauani', d: 'Terra · saúde · cura', cor: 'terra' },
-];
-
 function quandoFalta(dias: number): string {
   if (dias === 0) return 'é hoje';
   if (dias === 1) return 'é amanhã';
@@ -78,24 +72,6 @@ export default async function Inicio() {
         <p className="kicker">Mais de {anos} anos de</p>
         <div className="bigword">FÉ</div>
         <p>{site.sobre}</p>
-      </section>
-
-      <section className="alt">
-        <div className="inner" id="orixas">
-          <p className="kicker">Nossos</p>
-          <div className="bigword">ORIXÁS</div>
-          <div className="cards3">
-            {ORIXAS.map((o) => (
-              <div className={`c ${o.cor}`} key={o.n}>
-                <div className="e" aria-hidden>
-                  {o.e}
-                </div>
-                <h4>{o.n}</h4>
-                <p>{o.d}</p>
-              </div>
-            ))}
-          </div>
-        </div>
       </section>
 
       <section className="section" id="agenda">

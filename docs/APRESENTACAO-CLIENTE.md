@@ -12,7 +12,7 @@ São Paulo — SP · Fundado em 25/04/1980 · Odé/Oxóssi, Oxum e Obaluaê (Aza
 
 Um portal que funciona no **computador e no celular** (instalável na tela inicial, sem loja de apps):
 
-- **Site público:** história, Orixás, **calendário de toques**, fotos e vídeos das festas, jogo de búzios pelo
+- **Site público:** história, **calendário de toques**, fotos e vídeos das festas, jogo de búzios pelo
   WhatsApp e localização. Visual escuro e tecnológico; o topo mostra o **próximo toque** e quantos dias faltam.
 - **Área restrita** com login: cada filho acompanha a sua vida na casa; administração e coordenadores organizam tudo.
 
@@ -32,7 +32,7 @@ Um portal que funciona no **computador e no celular** (instalável na tela inici
 
 ![Página inicial](telas/01-site-inicio.png)
 
-Seções: A Casa · Orixás · Calendário de toques · Galeria · Jogo de búzios (abre o WhatsApp com a mensagem
+Seções: A Casa · Calendário de toques · Galeria · Jogo de búzios (abre o WhatsApp com a mensagem
 pronta — nada é enviado sozinho) · Onde estamos. Textos, cor e fotos são alterados pela administração.
 
 ## 4. Calendário

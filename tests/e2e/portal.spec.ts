@@ -8,10 +8,9 @@ test.describe.configure({ mode: 'serial' });
 test('site público: seções do protótipo e calendário de toques', async ({ page }) => {
   await page.goto('/');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(/fé, axé e tradição/i);
-  for (const palavra of ['FÉ', 'ORIXÁS', 'TOQUES', 'FESTAS', 'JOGO DE BÚZIOS', 'ESTAMOS']) {
+  for (const palavra of ['FÉ', 'TOQUES', 'FESTAS', 'JOGO DE BÚZIOS', 'ESTAMOS']) {
     await expect(page.locator('.bigword', { hasText: palavra }).first()).toBeVisible();
   }
-  await expect(page.getByText('Odé / Oxóssi')).toBeVisible();
   await foto(page, '01-site-inicio');
 
   await page.getByRole('link', { name: /calendário de toques/i }).click();

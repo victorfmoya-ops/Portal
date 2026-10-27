@@ -26,7 +26,7 @@ await checar('página inicial com as seções do protótipo', async () => {
   const r = await fetch(`${BASE}/`);
   const html = await r.text();
   esperar(r.status === 200, `status ${r.status}`);
-  for (const t of ['fé, axé e tradição', 'ORIXÁS', 'TOQUES', 'JOGO DE BÚZIOS', 'ESTAMOS']) esperar(html.includes(t), `faltou "${t}"`);
+  for (const t of ['fé, axé e tradição', 'TOQUES', 'FESTAS', 'JOGO DE BÚZIOS', 'ESTAMOS']) esperar(html.includes(t), `faltou "${t}"`);
 });
 
 await checar('calendário público de toques', async () => {
