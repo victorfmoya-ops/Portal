@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { AppShell } from '@/components/AppShell';
 import { BotaoEnviar } from '@/components/BotaoEnviar';
 import { FormComCaptcha } from '@/components/FormComCaptcha';
+import { googleAtivo } from '@/lib/provedores';
 import { chaveRecaptcha } from '@/lib/recaptcha';
 import { obterSessao } from '@/lib/sessao';
 import { entrarComGoogle, entrarComSenha } from './acoes';
@@ -11,6 +12,8 @@ export const metadata = { title: 'Entrar — Família Àṣẹ Omos Odé' };
 
 export default async function Entrar() {
   if (await obterSessao()) redirect('/app');
+  // o botão do Google só aparece se o provedor estiver ligado no Supabase (senão daria erro técnico)
+  const google = await googleAtivo();
   return (
     <AppShell titulo="Entrar">
       <div className="hero">
@@ -20,14 +23,23 @@ export default async function Entrar() {
         <p>Filhos e administradores da casa</p>
       </div>
       <div className="card">
-        <h3>Entrar com Google</h3>
-        <p className="muted">Só entra quem a administração da casa cadastrou. Use o mesmo e-mail informado ao administrador.</p>
-        <form action={entrarComGoogle}>
-          <BotaoEnviar className="btn google">
-            <span aria-hidden>🟦</span> Entrar com Google
-          </BotaoEnviar>
-        </form>
-        <div className="divisor">ou com e-mail e senha</div>
+        {google ? (
+          <>
+            <h3>Entrar com Google</h3>
+            <p className="muted">Só entra quem a administração da casa cadastrou. Use o mesmo e-mail informado ao administrador.</p>
+            <form action={entrarComGoogle}>
+              <BotaoEnviar className="btn google">
+                <span aria-hidden>🟦</span> Entrar com Google
+              </BotaoEnviar>
+            </form>
+            <div className="divisor">ou com e-mail e senha</div>
+          </>
+        ) : (
+          <>
+            <h3>Entrar com e-mail e senha</h3>
+            <p className="muted">Só entra quem a administração da casa cadastrou. Use o mesmo e-mail informado ao administrador.</p>
+          </>
+        )}
         <FormComCaptcha acao={entrarComSenha} chave={chaveRecaptcha()} botao={<BotaoEnviar>Entrar</BotaoEnviar>}>
           <label className="f">
             <span>E-mail</span>

@@ -2,6 +2,7 @@
 import { redirect } from 'next/navigation';
 import { envPublico, paraUrlPublica } from '@/lib/env';
 import { voltar } from '@/lib/mensagens';
+import { googleAtivo } from '@/lib/provedores';
 import { verificarRecaptcha } from '@/lib/recaptcha';
 import { criarClienteServidor } from '@/lib/supabase/servidor';
 import { emailSchema, loginSchema, novaSenhaSchema, primeiroAcessoSchema, validar } from '@/lib/validacao';
@@ -26,6 +27,7 @@ export async function entrarComSenha(fd: FormData) {
 }
 
 export async function entrarComGoogle() {
+  if (!(await googleAtivo())) voltar('/entrar', { erro: 'Login com Google ainda não está configurado. Use e-mail e senha.' });
   const supabase = await criarClienteServidor();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
