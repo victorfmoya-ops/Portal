@@ -32,9 +32,9 @@ export default async function Financeiro({ searchParams }: { searchParams: Promi
   const despesasMes = soma(doMes.data, 'despesa');
 
   const lista = [...(mens.data ?? [])].sort((a, b) => (a.membro?.nome ?? '').localeCompare(b.membro?.nome ?? ''));
-  const pendentesIds = lista.filter((m) => m.status === 'pendente').map((m) => m.id);
+  const pendentesIds = lista.filter((m) => m.status === 'pendente' || m.status === 'confirmado').map((m) => m.id);
   const { data: comps } = pendentesIds.length
-    ? await supabase.from('comprovantes').select('id, referencia_id').eq('tipo', 'mensalidade').in('referencia_id', pendentesIds).is('remover_em', null)
+    ? await supabase.from('comprovantes').select('id, referencia_id').eq('tipo', 'mensalidade').in('referencia_id', pendentesIds).gt('remover_em', new Date().toISOString())
     : { data: [] as { id: string; referencia_id: string }[] };
   const compPor = new Map((comps ?? []).map((c) => [c.referencia_id, c.id]));
   const conta = (s: string) => lista.filter((m) => m.status === s).length;
@@ -189,6 +189,9 @@ export default async function Financeiro({ searchParams }: { searchParams: Promi
         </div>
       </div>
 
+      <Link className="btn sec" href={`/app/admin/comprovantes?mes=${mes}`}>
+        📎 Comprovantes enviados em {nomeMes(mes)}
+      </Link>
       <Link className="btn sec" href="/app/admin/festas">
         🎉 Festas (contribuições)
       </Link>

@@ -5,7 +5,7 @@
 -- Rodar: carregue antes infra/ci/dados-de-teste.sql (dados fictícios) e depois npx supabase test db
 -- =====================================================================
 begin;
-select plan(37);
+select plan(39);
 
 -- ---------- Visitante (anon) ----------
 set local role anon;
@@ -25,6 +25,8 @@ select is((select count(*)::int from public.areas_restritas), 0, 'filho não vê
 select is((select count(*)::int from public.log_auditoria), 0, 'filho não vê a auditoria');
 select ok((select bool_and(g.numero = 1) from public.rodadas r join public.grupos g on g.id = r.grupo_id), 'filho vê só rodadas do seu grupo');
 select is((select count(*)::int from public.mensalidades where membro_id <> public.membro_atual_id()), 0, 'filho não vê mensalidade dos outros');
+select is((select count(*)::int from public.comprovantes), 0, 'filho não vê comprovantes, nem os próprios (só o admin)');
+select is((select count(*)::int from storage.objects where bucket_id = 'comprovantes'), 0, 'filho não abre arquivos de comprovante');
 
 -- escrita direta: bloqueada (RLS)
 select throws_ok($$ insert into public.mensalidades (org_id, membro_id, competencia, valor)

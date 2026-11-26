@@ -21,7 +21,7 @@ Um portal que funciona no **computador e no celular** (instalável na tela inici
 | Antes | Com o portal |
 |---|---|
 | Escala de limpeza em planilha e grupo de mensagens | Rodízio quinzenal por grupo; cada filho escolhe o seu dia; meta de **5 limpezas por ano** |
-| Comprovantes espalhados no WhatsApp | Filho envia no portal; a administração confirma; o arquivo é apagado depois |
+| Comprovantes espalhados no WhatsApp | Filho envia no portal; só a administração vê (por mês); o arquivo fica guardado até 6 meses |
 | Toques, funções e obrigações avisados de boca | **Calendário mensal** com cada compromisso no seu dia, cores por tipo e detalhes ao tocar |
 | Conta da festa no papel | **Arrecadação**: lista de compras, total e divisão automática pelos filhos ativos |
 | Funções na festa pouco claras | **Equipes** com coordenador e tarefas por festa, com andamento |
@@ -89,7 +89,7 @@ equipes, cadastro dos filhos (equipe e cargo), grupos, áreas restritas, galeria
 
 - Entrar com **Google** ou **e-mail e senha**; **só entra quem a administração cadastrou**.
 - Cada pessoa vê só o que lhe cabe — garantido **pelo banco de dados** (37 verificações automáticas de permissão).
-- Comprovantes privados e apagados após a análise; sem dados bancários, cartão ou Pix; termo de consentimento (LGPD).
+- Comprovantes visíveis só para a administração e guardados até 6 meses; sem dados bancários, cartão ou Pix; termo de consentimento (LGPD).
 - Esteira DevSecOps a cada mudança (segredos, código, bibliotecas, imagem, testes, OWASP ZAP): **falha alta ou
   crítica bloqueia**. 24 testes unitários e testes de ponta a ponta. Monitoramento com alertas.
 

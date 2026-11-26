@@ -25,7 +25,7 @@ export function AcoesPagamento({
   );
   return (
     <div className="actions" style={{ margin: 0, justifyContent: 'flex-end' }}>
-      {status === 'pendente' && comprovanteId ? (
+      {comprovanteId && (status === 'pendente' || status === 'confirmado') ? (
         <a className="btn ghost small" href={`/app/admin/comprovante/${comprovanteId}`} target="_blank" rel="noopener noreferrer">
           📎 Ver
         </a>

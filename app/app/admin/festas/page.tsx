@@ -15,9 +15,9 @@ export default async function FestasAdmin() {
     .select('id, nome, data, valor, contribuicoes_festa(id, status, valor, membro:membros!contribuicoes_festa_membro_id_fkey(nome))')
     .order('data', { ascending: false })
     .limit(20);
-  const pendentes = (festas ?? []).flatMap((f) => f.contribuicoes_festa.filter((c) => c.status === 'pendente').map((c) => c.id));
+  const pendentes = (festas ?? []).flatMap((f) => f.contribuicoes_festa.filter((c) => c.status === 'pendente' || c.status === 'confirmado').map((c) => c.id));
   const { data: comps } = pendentes.length
-    ? await supabase.from('comprovantes').select('id, referencia_id').eq('tipo', 'festa').in('referencia_id', pendentes).is('remover_em', null)
+    ? await supabase.from('comprovantes').select('id, referencia_id').eq('tipo', 'festa').in('referencia_id', pendentes).gt('remover_em', new Date().toISOString())
     : { data: [] as { id: string; referencia_id: string }[] };
   const compPor = new Map((comps ?? []).map((c) => [c.referencia_id, c.id]));
 

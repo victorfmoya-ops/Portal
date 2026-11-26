@@ -6,6 +6,27 @@ Passo a passo para colocar o portal no ar numa hospedagem que roda **Node.js** �
 
 > O portal **não roda** em hospedagem só HTML/PHP: login, área restrita, comprovantes e rotinas precisam do Node.js.
 
+## 🍳 Receita rápida (resumo de tudo abaixo)
+
+| # | Faça | Onde | Detalhe |
+|---|---|---|---|
+| 1 | Criar o projeto Supabase (região São Paulo) | supabase.com | seção 1 |
+| 2 | `npx supabase link --project-ref <ref>` e `npx supabase db push` | PowerShell, na pasta do projeto | aplica as 7 migrations (inclui a regra dos comprovantes) |
+| 3 | Rodar `supabase/seed.sql` no SQL Editor | painel do Supabase | só dados reais da casa |
+| 4 | Ajustar *Site URL*, *Redirect URLs*, confirmação de e-mail e SMTP | Supabase → Authentication | seção 1 |
+| 5 | Copiar `.env.example` → `.env.producao` e preencher | PC | seção 2 (nunca vai para o Git nem para o FTP) |
+| 6 | `powershell -ExecutionPolicy Bypass -File scripts\gerar-pacote-ftp.ps1` | PC | gera `dist\ftp\portal.zip` e confere que não tem segredo |
+| 7 | Criar a aplicação Node.js 22, arquivo `server.js`, pasta fora do `public_html` | painel da hospedagem | seção 4 |
+| 8 | Cadastrar as variáveis de ambiente | painel da hospedagem | seção 4 |
+| 9 | Subir `portal.zip` por **FTPS/SFTP**, extrair, apagar o zip, **Restart** | FileZilla ou gerenciador de arquivos | seção 5 |
+| 10 | Cadastrar os 2 Cron Jobs (limpar comprovantes e gerar mensalidades) | painel da hospedagem | seção 6 |
+| 11 | Criar o primeiro administrador | Supabase → SQL Editor | seção 7 |
+| 12 | `$env:BASE="https://seu-dominio.com.br"; node infra\ci\smoke.mjs` | PC | tem que passar tudo (seção 8) |
+
+**Regra dos comprovantes (vale em produção):** o filho envia o comprovante da mensalidade ou da ajuda na festa,
+mas **só o administrador vê** (tela *Administração → Comprovantes por mês*). Cada comprovante fica guardado
+**até 6 meses** após o envio e é apagado pela rotina `limpar-comprovantes`; recusados ou substituídos são apagados logo.
+
 ## O que você precisa antes
 
 | Item | Onde | Observação |
@@ -115,7 +136,7 @@ Depois: **Restart** na aplicação Node.js do painel.
 | a cada 15 minutos (`*/15 * * * *`) | `curl -fsS -X POST -H "Authorization: Bearer $(cat ~/.portal_cron_secret)" https://seu-dominio.com.br/api/cron/limpar-comprovantes` |
 | a cada 6 horas (`0 */6 * * *`) | `curl -fsS -X POST -H "Authorization: Bearer $(cat ~/.portal_cron_secret)" https://seu-dominio.com.br/api/cron/gerar-mensalidades` |
 
-A primeira apaga os comprovantes já analisados (privacidade); a segunda garante as mensalidades do mês
+A primeira apaga os comprovantes recusados/substituídos e os com mais de 6 meses (privacidade); a segunda garante as mensalidades do mês
 (o banco também lança no dia 1º via pg_cron, se disponível no plano).
 
 ## 7. Primeiro administrador

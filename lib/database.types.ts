@@ -103,14 +103,14 @@ isOneToOne: false
                   ]
                 },"comprovantes": {
                   Row: {
-                    "enviado_em": string,"id": string,"membro_id": string,"mime": string,"org_id": string,"referencia_id": string,"remover_em": string | null,"storage_path": string,"tamanho": number,"tipo": string
+                    "enviado_em": string,"id": string,"membro_id": string,"mime": string,"org_id": string,"referencia_id": string,"remover_em": string,"storage_path": string,"tamanho": number,"tipo": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "enviado_em"?: string,"id"?: string,"membro_id": string,"mime": string,"org_id": string,"referencia_id": string,"remover_em"?: string | null,"storage_path": string,"tamanho": number,"tipo": string
+                    "enviado_em"?: string,"id"?: string,"membro_id": string,"mime": string,"org_id": string,"referencia_id": string,"remover_em"?: string,"storage_path": string,"tamanho": number,"tipo": string
                   }
                   Update: {
-                    "enviado_em"?: string,"id"?: string,"membro_id"?: string,"mime"?: string,"org_id"?: string,"referencia_id"?: string,"remover_em"?: string | null,"storage_path"?: string,"tamanho"?: number,"tipo"?: string
+                    "enviado_em"?: string,"id"?: string,"membro_id"?: string,"mime"?: string,"org_id"?: string,"referencia_id"?: string,"remover_em"?: string,"storage_path"?: string,"tamanho"?: number,"tipo"?: string
                   }
                   Relationships: [
                     {

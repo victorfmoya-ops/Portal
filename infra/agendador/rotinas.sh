@@ -1,6 +1,6 @@
 #!/bin/sh
 # Agendador do portal: chama as rotinas automáticas com o token CRON_SECRET.
-#  - a cada 15 min: apaga comprovantes já analisados (privacidade/LGPD)
+#  - a cada 15 min: apaga comprovantes recusados/substituídos e os com mais de 6 meses (LGPD)
 #  - a cada 6 h:    garante as mensalidades do mês (idempotente)
 set -eu
 URL="${PORTAL_URL:-http://web:3000}"

@@ -311,7 +311,7 @@ docker run --rm -v "${PWD}\infra\terraform\local:/w" -w /w hashicorp/terraform:1
 - OWASP ZAP: 0 alto; médios/baixos avaliados um a um em `REGISTRO-DE-ERROS.md` (seção "Resultado do OWASP ZAP").
 - Links só `https://`; HTML escapado pelo React (sem `innerHTML`); redirecionamentos só para caminhos internos.
 - Containers: usuário sem privilégio, sistema de arquivos só leitura, `cap_drop: ALL`, `no-new-privileges`, limites de memória.
-- Comprovantes privados e **apagados** após a análise; auditoria somente leitura.
+- Comprovantes visíveis **só para o administrador**, guardados até **6 meses** (recusados são apagados logo); auditoria somente leitura.
 - Minimização (LGPD): aniversário só dia/mês; sem dados bancários/cartão/Pix; termo de consentimento versionado.
 
 ## 15. Publicação em produção (quando autorizado)

@@ -9,7 +9,7 @@ export async function GET(_req: Request, ctx: { params: Promise<{ id: string }> 
   const id = z.uuid().safeParse((await ctx.params).id);
   if (!id.success) return new NextResponse('Comprovante inválido', { status: 400 });
   const { data: c } = await supabase.from('comprovantes').select('storage_path').eq('id', id.data).maybeSingle();
-  if (!c) return new NextResponse('Comprovante não encontrado (pode já ter sido apagado após a análise).', { status: 404 });
+  if (!c) return new NextResponse('Comprovante não encontrado (pode já ter sido apagado: recusado, substituído ou com mais de 6 meses).', { status: 404 });
   const { data, error } = await supabase.storage.from('comprovantes').createSignedUrl(c.storage_path, 120);
   if (error || !data) return new NextResponse('Não foi possível abrir o arquivo.', { status: 500 });
   return NextResponse.redirect(paraUrlPublica(data.signedUrl), { headers: { 'Cache-Control': 'no-store' } });

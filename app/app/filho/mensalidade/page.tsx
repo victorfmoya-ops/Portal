@@ -57,7 +57,7 @@ export default async function Mensalidade() {
         <h3>Como funciona</h3>
         <p className="muted">
           Você paga do jeito combinado com a casa (fora do portal), informa a data, anexa o comprovante e envia → fica <b>em análise</b> → a
-          administração confirma. O portal não guarda dados bancários, e o comprovante é apagado depois da análise.
+          administração confirma. O portal não guarda dados bancários. Só a administração vê o comprovante, que fica guardado por até 6 meses e depois é apagado.
         </p>
       </div>
     </AppShell>

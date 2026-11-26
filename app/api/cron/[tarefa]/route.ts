@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 /**
  * Rotinas automáticas chamadas pelo agendador (container "agendador" no Docker
  * ou qualquer cron externo) com o cabeçalho Authorization: Bearer CRON_SECRET.
- *   POST /api/cron/limpar-comprovantes  → apaga comprovantes já analisados (privacidade)
+ *   POST /api/cron/limpar-comprovantes  → apaga comprovantes recusados/substituídos e os com mais de 6 meses
  *   POST /api/cron/gerar-mensalidades   → garante as mensalidades do mês (idempotente)
  */
 function autorizado(req: NextRequest): boolean {
@@ -21,7 +21,7 @@ function autorizado(req: NextRequest): boolean {
 
 async function limparComprovantes() {
   const db = criarClienteServico();
-  const { data, error } = await db.from('comprovantes').select('id, storage_path').not('remover_em', 'is', null).limit(200);
+  const { data, error } = await db.from('comprovantes').select('id, storage_path').lte('remover_em', new Date().toISOString()).limit(200);
   if (error) throw error;
   if (!data.length) return { removidos: 0 };
   const { error: es } = await db.storage.from('comprovantes').remove(data.map((c) => c.storage_path));

@@ -113,6 +113,9 @@ export default async function InicioAdmin() {
         <Link className="btn sec" href="/app/admin/financeiro">
           💰 Controle financeiro
         </Link>
+        <Link className="btn sec" href="/app/admin/comprovantes">
+          📎 Comprovantes por mês
+        </Link>
         <Link className="btn sec" href="/app/admin/filhos">
           🧑🏾 Filhos (cadastro)
         </Link>

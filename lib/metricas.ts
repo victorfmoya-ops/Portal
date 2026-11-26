@@ -16,7 +16,7 @@ function criar() {
   });
   const comprovantesRemovidos = new client.Counter({
     name: 'portal_comprovantes_removidos_total',
-    help: 'Comprovantes apagados após a análise (privacidade)',
+    help: 'Comprovantes apagados (recusados, substituídos ou com mais de 6 meses)',
     registers: [registro],
   });
   const bancoOk = new client.Gauge({
