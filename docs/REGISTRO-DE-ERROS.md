@@ -171,3 +171,23 @@ Histórico das tentativas: #1 YAML inválido (E18) · #4 Trivy bloqueou a imagem
 - **Risco:** baixo (arquivo local, fora do Git, valor só de desenvolvimento), mas segredo exibido = segredo trocado.
 - **Solução:** `CRON_SECRET` regenerado (veja "Trocar segredos" em CONFIGURACOES-E-PROCESSOS.md). Na esteira o Trivy roda
   sobre o código do Git, onde os `.env` não existem.
+
+## 26/11/2026 — Comprovantes só para o admin e pacote FTP
+
+### E23 · Docker Desktop não estava no caminho padrão
+- **Sintoma:** `Start-Process "C:\Program Files\Docker\Docker\Docker Desktop.exe"` → arquivo não encontrado.
+- **Causa:** o Docker Desktop foi instalado por usuário, em `C:\Users\Victor\AppData\Local\Programs\DockerDesktop`.
+- **Solução:** iniciar por `"%LOCALAPPDATA%\Programs\DockerDesktop\Docker Desktop.exe"`.
+
+### E24 · Laboratório da esteira (C:\Darkflow\devsecops) não existe mais
+- **Sintoma:** `scripts/integrar-na-esteira.ps1` depende de `C:\Darkflow\devsecops\docker-compose.yml`, que foi apagado.
+  Sobraram só os volumes `darkflow-devsecops_*` no Docker.
+- **Decisão:** o projeto passa a ser publicado no **GitLab.com** (repositório privado); o `.gitlab-ci.yml` roda nos
+  runners da nuvem.
+
+### E25 · Build parado por vulnerabilidade do Next.js 16.4.3
+- **Sintoma:** `npm run build` parou com `SecurityFatalError: Your version of Next.js is affected by a known security
+  vulnerability`.
+- **Conferência:** `npm audit --omit=dev` confirmou 1 vulnerabilidade **moderada** em `next`, corrigida na 16.4.6.
+- **Solução:** `next` e `eslint-config-next` atualizados para **16.4.6** (só patch). `npm audit` → 0 vulnerabilidades;
+  pacote FTP gerado e conferido.
