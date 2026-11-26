@@ -1,0 +1,43 @@
+1..39
+ok 1 - visitante não vê nenhum filho
+ok 2 - visitante vê a agenda pública de toques
+ok 3 - visitante não vê o caixa
+ok 4 - visitante não chama funções do portal
+ok 5 - filho vê só o próprio cadastro
+ok 6 - filho não vê o caixa da casa
+ok 7 - filho não vê áreas restritas
+ok 8 - filho não vê a auditoria
+ok 9 - filho vê só rodadas do seu grupo
+ok 10 - filho não vê mensalidade dos outros
+ok 11 - filho não vê comprovantes, nem os próprios (só o admin)
+ok 12 - filho não abre arquivos de comprovante
+ok 13 - filho não cria mensalidade direto
+ok 14 - filho não marca a própria mensalidade como paga
+ok 15 - filho não vira admin
+ok 16 - filho não edita a ficha (somente leitura)
+ok 17 - filho não grava escolha de dia direto na tabela
+ok 18 - filho escolhe o dia numa rodada do seu grupo dentro do prazo
+ok 19 - escolha gravada
+ok 20 - dia fora da semana da rodada é recusado
+ok 21 - depois do prazo (1 mês antes) o filho não escolhe mais
+ok 22 - comprovante exige arquivo no caminho certo do próprio filho
+ok 23 - filho lê o espaço de aprendizado
+ok 24 - filho sem cargo de ensino não publica lição
+ok 25 - ninguém grava lição direto na tabela
+ok 26 - filho sem coordenação não monta a lista de compras
+ok 27 - filho sem coordenação não define a contribuição
+ok 28 - filho sem coordenação não cria tarefa
+{"sub":"aaaaaaaa-0000-0000-0000-000000000099","role":"authenticated"}
+ok 29 - usuário sem cadastro não tem acesso
+{"sub":"aaaaaaaa-0000-0000-0000-000000000001","role":"authenticated"}
+ok 30 - admin vê todos os cadastros
+ok 31 - admin confirma pagamento
+ok 32 - recusa exige motivo
+ok 33 - admin publica lição
+ok 34 - admin adiciona item à lista de compras
+ok 35 - rateio divide o total pelos filhos ativos, arredondando para cima
+ok 36 - contribuições em aberto recebem o novo valor
+ok 37 - admin cria tarefa para a equipe
+{"sub":"aaaaaaaa-0000-0000-0000-000000000002","role":"authenticated"}
+ok 38 - coordenador(a) da arrecadação monta a lista de compras
+ok 39 - coordenador(a) da arrecadação define a contribuição

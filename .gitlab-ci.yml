@@ -14,6 +14,11 @@
 #   Segredo vazado (Gitleaks) .... sempre bloqueia
 # Cada ferramenta: 1º mostra TUDO no log (sem falhar); 2º aplica o gate só em HIGH/CRITICAL.
 # Nada é publicado: a imagem fica no Docker local e o ambiente de revisão é destruído no fim.
+#
+# ONDE RODA:
+#   GitLab.com (runners da nuvem) ... segredos, sast, sca, testes (app + banco) e SonarQube (se houver SONAR_TOKEN)
+#   Laboratório local ............... tudo acima + build, scan da imagem, review e DAST
+#                                     (variável de CI ESTEIRA_LOCAL=1, precisa do Docker e do Supabase locais)
 # =====================================================================================
 
 stages: [segredos, sast, sca, testes, qualidade, build, scan-imagem, review, dast, limpeza]
@@ -32,6 +37,8 @@ default:
 
 .node_docker:
   image: ${NODE_IMAGE}
+  rules:
+    - if: $ESTEIRA_LOCAL == "1"
   before_script:
     - apk add --no-cache docker-cli >/dev/null
 
@@ -104,25 +111,20 @@ testes-app:
     paths: [coverage/lcov.info]
     expire_in: 7 days
 
-# Testes de segurança do banco (RLS + regras do filho) num Postgres descartável
+# Testes de segurança do banco (RLS + regras do filho) num Postgres descartável (service do job).
+# Funciona no GitLab.com e no laboratório local; nenhum dado real (só infra/ci/dados-de-teste.sql).
 testes-banco:
-  extends: .node_docker
   stage: testes
+  image: postgres:17-alpine
+  services:
+    - name: ${PG_IMAGE}
+      alias: pg
   variables:
-    PG: "pg-ci-${CI_JOB_ID}"
+    POSTGRES_PASSWORD: "ci-somente-teste"
+    PGPASSWORD: "ci-somente-teste"
+    PGHOST: "pg"
   script:
-    - docker run -d --name ${PG} --network ${LAB_NETWORK} -e POSTGRES_PASSWORD=ci-somente-teste ${PG_IMAGE}
-    - for i in $(seq 1 60); do docker exec ${PG} pg_isready -U postgres -h 127.0.0.1 >/dev/null 2>&1 && break; sleep 2; done; sleep 5
-    - docker exec -i ${PG} psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q < supabase/tests/ci/preparar-banco.sql
-    - for f in supabase/migrations/*.sql; do echo "migration $f"; docker exec -i ${PG} psql -U postgres -h 127.0.0.1 -d postgres -v ON_ERROR_STOP=1 -q < "$f"; done
-    - docker exec -i ${PG} psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q < supabase/seed.sql
-    - docker exec -i ${PG} psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q < infra/ci/dados-de-teste.sql
-    - docker exec ${PG} psql -U supabase_admin -d postgres -qc "create extension if not exists pgtap"
-    - docker exec -i ${PG} psql -U supabase_admin -d postgres -v ON_ERROR_STOP=1 -q -tA < supabase/tests/rls_permissoes.test.sql | tee pgtap.txt
-    - "! grep -q '^not ok' pgtap.txt"
-    - 'echo "Testes de RLS aprovados = $(grep -c "^ok" pgtap.txt)"'
-  after_script:
-    - docker rm -f pg-ci-${CI_JOB_ID} || true
+    - sh infra/ci/testes-banco.sh
   artifacts:
     when: always
     paths: [pgtap.txt]
@@ -155,6 +157,8 @@ build-imagem:
 # ------------------------------------------------------------------ 7) SCAN DA IMAGEM
 trivy-imagem:
   stage: scan-imagem
+  rules:
+    - if: $ESTEIRA_LOCAL == "1"
   image:
     name: ${TRIVY_IMAGE}
     entrypoint: [""]
@@ -206,7 +210,9 @@ owasp-zap:
 destruir-review:
   extends: .node_docker
   stage: limpeza
-  when: always
+  rules:
+    - if: $ESTEIRA_LOCAL == "1"
+      when: always
   script:
     - docker rm -f ${REVIEW_NAME} || true
     - docker image rm ${IMAGE} || true
